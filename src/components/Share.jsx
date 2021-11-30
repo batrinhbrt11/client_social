@@ -13,7 +13,8 @@ import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import CloseIcon from "@mui/icons-material/Close";
 import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
-
+import { storage } from "../firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "@firebase/storage";
 const useStyles = makeStyles((theme) => ({
   share: {
     width: "100%",
@@ -110,14 +111,47 @@ export default function Share() {
   const { user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
+  const [progress, setProgress] = useState(0);
+
   const [file, setFile] = useState(null);
+  const uploadFiles = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!file) return;
+      const storageRef = ref(storage, `/files/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const prog = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgress(prog);
+        },
+        (err) => {
+          console.log(err);
+          reject();
+        },
+        async () => {
+          await getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            resolve(url);
+          });
+        }
+      );
+    });
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
-    const newPost = {
-      userId: user._id,
-      desc: desc.current.value,
-    };
+    const file = e.target[0].files[0];
+
     try {
+      const link = await uploadFiles(file);
+      const newPost = {
+        userId: user._id,
+        desc: desc.current.value,
+        img: link,
+      };
+
       await axios.post("/posts", newPost);
       window.location.reload();
     } catch (err) {

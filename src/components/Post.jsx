@@ -145,7 +145,7 @@ export default function Post({ post }) {
           <Typography variant="body1" className={classes.postText}>
             {post.desc}
           </Typography>
-          <img src={PF + post.img} alt="" className={classes.postImg} />
+          <img src={post.img} alt="" className={classes.postImg} />
         </div>
         <Divider />
         <div className={classes.postBottom}>
