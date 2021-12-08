@@ -6,6 +6,7 @@ import {
   Divider,
   makeStyles,
   Typography,
+  TextareaAutosize,
 } from "@material-ui/core";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
@@ -111,12 +112,12 @@ export default function Share() {
   const { user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
-  const [progress, setProgress] = useState(0);
 
   const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(0);
   const uploadFiles = (file) => {
     return new Promise((resolve, reject) => {
-      if (!file) return;
+      if (!file) resolve("");
       const storageRef = ref(storage, `/files/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
@@ -146,14 +147,19 @@ export default function Share() {
 
     try {
       const link = await uploadFiles(file);
-      const newPost = {
-        userId: user._id,
-        desc: desc.current.value,
-        img: link,
-      };
-
-      await axios.post("/posts", newPost);
-      window.location.reload();
+      if (link === "" && desc.current.value === "") {
+        return null;
+      } else {
+        console.log(link);
+        console.log(desc);
+        const newPost = {
+          userId: user._id,
+          desc: desc.current.value,
+          img: link,
+        };
+        await axios.post("/posts", newPost);
+        window.location.reload();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -166,12 +172,13 @@ export default function Share() {
             alt=""
             src={
               user.profilePicture
-                ? PF + user.profilePicture
+                ? user.profilePicture
                 : PF + "person/noAvartar.jpg"
             }
             className={classes.image}
           />
-          <input
+
+          <TextareaAutosize
             placeholder={"What's new, " + user.username + "?"}
             className={classes.shareInput}
             ref={desc}

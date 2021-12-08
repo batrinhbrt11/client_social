@@ -152,7 +152,7 @@ export default function Navbar() {
               alt=""
               src={
                 user.profilePicture
-                  ? PF + user.profilePicture
+                  ? user.profilePicture
                   : PF + "person/noAvartar.jpg"
               }
               className={classes.image}

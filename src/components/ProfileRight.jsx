@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import "../css/ProfileRight.css";
 import CreateIcon from "@mui/icons-material/Create";
 import axios from "axios";
@@ -6,7 +6,15 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-export default function ProfileRight({ user }) {
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
+export default function ProfileRight({ user, changeUser }) {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
@@ -14,16 +22,66 @@ export default function ProfileRight({ user }) {
     currentUser.followings.includes(user._id)
   );
 
+  const editName = useRef();
+  const editCity = useRef();
+  //edit info modal
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const Edit_info = async (e) => {
+    e.preventDefault();
+    try {
+      let name_edit = "";
+      let city_edit = "";
+      if (editName.current.value === "") {
+        name_edit = currentUser.username;
+      } else {
+        name_edit = editName.current.value;
+      }
+
+      if (editCity.current.value === "") {
+        city_edit = currentUser.city;
+      } else {
+        city_edit = editCity.current.value;
+      }
+      const newInfo = {
+        userId: currentUser._id,
+        username: name_edit,
+        city: city_edit,
+      };
+
+      await axios.put(`/users/${currentUser._id}`, newInfo);
+
+      await dispatch({ type: "EDIT_INFO", payload: newInfo });
+      const res = await axios.get(`/users/${currentUser._id}`);
+      changeUser(res.data);
+
+      handleClose();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //end edit info modal
   useEffect(() => {
+    let isCancelled = false;
     const getFriends = async () => {
       try {
         const friendList = await axios.get("/users/friends/" + user._id);
         setFriends(friendList.data);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
     getFriends();
+    return () => {
+      isCancelled = true;
+    };
   }, [user]);
 
   const handleClick = async () => {
@@ -45,7 +103,7 @@ export default function ProfileRight({ user }) {
 
   return (
     <div>
-      {user.username !== currentUser.username && (
+      {user._id !== currentUser._id && (
         <button className="rightbarFollowButton" onClick={handleClick}>
           {followed ? "Unfollow" : "Follow"}
           {followed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
@@ -53,8 +111,65 @@ export default function ProfileRight({ user }) {
       )}
       <div className="rightbarInfoContainer">
         <h4 className="rightbarTitle">
-          Thông tin <CreateIcon className="rightbarIcon" />
+          Thông tin
+          {user._id === currentUser._id ? (
+            <CreateIcon className="rightbarIcon" onClick={handleClickOpen} />
+          ) : (
+            <></>
+          )}
         </h4>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle className="form_update_header">
+            Sửa thông tin
+          </DialogTitle>
+          <DialogContent>
+            <form className="form_update_info">
+              <div className="form_update_info-item">
+                <label htmlFor="fname" className="form_update_info-label">
+                  Tên hiển thị:
+                </label>
+                <input
+                  aria-label=""
+                  className="form_update_info-input"
+                  defaultValue={currentUser.username}
+                  ref={editName}
+                />
+              </div>
+              <div className="form_update_info-item">
+                <label htmlFor="faculty" className="form_update_info-label">
+                  Khoa:
+                </label>
+                <select className="form_update_info-input">
+                  <option value="0">Chọn khoa:</option>
+                  <option value="1">CNTT</option>
+                  <option value="2">DIen</option>
+                  <option value="2">abd</option>
+                </select>
+              </div>
+              <div className="form_update_info-item">
+                <label htmlFor="city" className="form_update_info-label">
+                  Thành phố:
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  className="form_update_info-input"
+                  defaultValue={currentUser.city}
+                  ref={editCity}
+                />
+              </div>
+            </form>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} className="button_cancel">
+              Hủy
+            </Button>
+            <Button onClick={(e) => Edit_info(e)} className="button_edit">
+              Sửa
+            </Button>
+          </DialogActions>
+        </Dialog>
         <div className="rightbarInfo">
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Khoa:</span>

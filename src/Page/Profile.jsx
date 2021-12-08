@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles, Grid } from "@material-ui/core";
 import axios from "axios";
 import ProfileImage from "../components/ProfileImage";
@@ -7,7 +7,7 @@ import ProfileRight from "../components/ProfileRight";
 import Leftbar from "../components/Leftbar";
 import { useParams } from "react-router";
 import Navbar from "../components/Navbar";
-
+import { AuthContext } from "../Context/AuthContext";
 const useStyles = makeStyles((theme) => ({
   profileContainer: {
     display: "grid",
@@ -65,10 +65,14 @@ export default function Profile() {
         </Grid>
         <Grid item sm={12} md={10} xs={12}>
           <div className={classes.profile}>
-            <ProfileImage user={user} />
+            <ProfileImage user={user} changeUser={(user) => setUser(user)} />
             <div className={classes.profileContainer}>
               <div className={classes.profileRight}>
-                <ProfileRight key={user._id} user={user} />
+                <ProfileRight
+                  key={user._id}
+                  user={user}
+                  changeUser={(user) => setUser(user)}
+                />
               </div>
               <div className={classes.profileLeft}>
                 <Feed userId={id} />

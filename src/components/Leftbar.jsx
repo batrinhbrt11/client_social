@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
   title_text: {
     fontWeight: "600",
     color: "black",
-    fontSize: "1.25rem",
+    fontSize: "0.85rem",
+    textAlign: "left",
   },
   item: {
     display: "flex",
@@ -84,13 +85,13 @@ export default function Leftbar() {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <Container className={classes.container}>
-      <Link to="/profile">
+      <Link to={`/profile/${user._id}`}>
         <Box textAlign="center" p={2} className={classes.title}>
           <Avatar
             alt=""
             src={
               user.profilePicture
-                ? PF + user.profilePicture
+                ? user.profilePicture
                 : PF + "person/noAvartar.jpg"
             }
             className={classes.image}
