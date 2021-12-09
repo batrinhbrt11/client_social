@@ -46,12 +46,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Profile() {
   const classes = useStyles();
+  const { token } = useContext(AuthContext);
   const [user, setUser] = useState({});
   const id = useParams().id;
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`/users/${id}`);
+      const res = await axios.get(`/users/${id}`, {
+        headers: { "x-access-token": token },
+      });
       setUser(res.data);
     };
     fetchUser();

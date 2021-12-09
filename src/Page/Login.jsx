@@ -23,15 +23,21 @@ export default function Login() {
         </div>
         <div className="loginRight">
           <form className="loginBox" onSubmit={handleClick}>
+            {error ? (
+              <span className="error">Sai tài khoản hoặc mật khẩu</span>
+            ) : (
+              <span></span>
+            )}
+
             <input
-              placeholder="Email"
+              placeholder="Tài khoản"
               className="loginInput"
               type="email"
               ref={email}
               required
             />
             <input
-              placeholder="Password"
+              placeholder="Mật khẩu"
               className="loginInput"
               type="password"
               ref={password}

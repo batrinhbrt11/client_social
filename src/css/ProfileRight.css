@@ -81,7 +81,11 @@
     font-weight: 600;
     color: black;
 }
-
+.loadingProgress {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 50px;
+}
 .rightbarFollowButton {
     margin-top: 30px;
     margin-bottom: 10px;

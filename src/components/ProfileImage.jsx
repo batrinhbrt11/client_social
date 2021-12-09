@@ -12,6 +12,8 @@ import axios from "axios";
 import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "@firebase/storage";
 import { AuthContext } from "../Context/AuthContext";
+import { CircularProgress } from "@mui/material";
+import { Facebook } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   profileCover: {
     height: "400px",
@@ -123,9 +125,10 @@ const useStyles = makeStyles((theme) => ({
 export default function ProfileImage({ user, changeUser }) {
   const classes = useStyles();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const { user: currentUser, dispatch } = useContext(AuthContext);
+  const { token, user: currentUser, dispatch } = useContext(AuthContext);
   // firebase
   const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
   const uploadFiles = (file) => {
     return new Promise((resolve, reject) => {
       if (!file) resolve("");
@@ -165,15 +168,23 @@ export default function ProfileImage({ user, changeUser }) {
   const submitAvt = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
+
       const link = await uploadFiles(fileAvt);
       const newAvt = {
         userId: currentUser._id,
         profilePicture: link,
       };
-      await axios.put(`/users/${currentUser._id}`, newAvt);
+      await axios.put(`/users/${currentUser._id}`, newAvt, {
+        headers: { "x-access-token": token },
+      });
       await dispatch({ type: "EDIT_AVT", payload: newAvt });
-      const res = await axios.get(`/users/${currentUser._id}`);
+      const res = await axios.get(`/users/${currentUser._id}`, {
+        headers: { "x-access-token": token },
+      });
       changeUser(res.data);
+      setLoading(false);
+
       handleCloseAvt();
     } catch (err) {
       console.log(err);
@@ -193,14 +204,20 @@ export default function ProfileImage({ user, changeUser }) {
   const submitCover = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const link = await uploadFiles(fileCover);
       const newCover = {
         userId: currentUser._id,
         coverPicture: link,
       };
-      await axios.put(`/users/${currentUser._id}`, newCover);
-      const res = await axios.get(`/users/${currentUser._id}`);
+      await axios.put(`/users/${currentUser._id}`, newCover, {
+        headers: { "x-access-token": token },
+      });
+      const res = await axios.get(`/users/${currentUser._id}`, {
+        headers: { "x-access-token": token },
+      });
       changeUser(res.data);
+      setLoading(false);
       handleCloseCover();
     } catch (err) {
       console.log(err);
@@ -272,7 +289,7 @@ export default function ProfileImage({ user, changeUser }) {
             Hủy
           </Button>
           <Button onClick={(e) => submitAvt(e)} className={classes.btn_edit}>
-            Đồng ý
+            {loading ? <CircularProgress color="inherit" /> : "Đồng ý"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -280,7 +297,7 @@ export default function ProfileImage({ user, changeUser }) {
 
       {/* modalCover */}
       <Dialog open={openCover} onClose={handleCloseCover}>
-        <DialogTitle>Đổi ảnh đại diện</DialogTitle>
+        <DialogTitle>Đổi ảnh Bìa</DialogTitle>
         <DialogContent>
           <form>
             <label htmlFor="file_cover" className={classes.shareOption}>
@@ -315,7 +332,7 @@ export default function ProfileImage({ user, changeUser }) {
             Hủy
           </Button>
           <Button onClick={(e) => submitCover(e)} className={classes.btn_edit}>
-            Đồng ý
+            {loading ? <CircularProgress color="inherit" /> : "Đồng ý"}
           </Button>
         </DialogActions>
       </Dialog>

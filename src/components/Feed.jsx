@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Feed({ userId }) {
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
 
   useEffect(() => {
     //clean up useEffect with axios
@@ -23,12 +23,24 @@ export default function Feed({ userId }) {
     const fetchPosts = async () => {
       try {
         const res = userId
-          ? await axios.get(`/posts/profile/${userId}?page=1`, {
-              cancelToken: ourRequest.token, //2nd step
-            })
-          : await axios.get(`posts/timeline/${user._id}?page=1`, {
-              cancelToken: ourRequest.token,
-            });
+          ? await axios.get(
+              `/posts/profile/${userId}?page=1`,
+              {
+                headers: { "x-access-token": token },
+              },
+              {
+                cancelToken: ourRequest.token, //2nd step
+              }
+            )
+          : await axios.get(
+              `posts/timeline/${user._id}?page=1`,
+              {
+                headers: { "x-access-token": token },
+              },
+              {
+                cancelToken: ourRequest.token,
+              }
+            );
         const postData = res.data;
 
         setPosts(postData);
@@ -51,8 +63,12 @@ export default function Feed({ userId }) {
   const [noMore, setNoMore] = useState(true);
   const fetchPosts2 = async () => {
     const res = userId
-      ? await axios.get(`/posts/profile/${userId}?page=${page}`)
-      : await axios.get(`posts/timeline/${user._id}?page=${page}`);
+      ? await axios.get(`/posts/profile/${userId}?page=${page}`, {
+          headers: { "x-access-token": token },
+        })
+      : await axios.get(`posts/timeline/${user._id}?page=${page}`, {
+          headers: { "x-access-token": token },
+        });
     const postData2 = res.data;
 
     return postData2;
@@ -69,7 +85,13 @@ export default function Feed({ userId }) {
     const data = {
       userId: user._id,
     };
-    const res = await axios.delete(`posts/${id}`, { data });
+    const res = await axios.delete(
+      `posts/${id}`,
+      { data },
+      {
+        headers: { "x-access-token": token },
+      }
+    );
     setPosts(posts.filter((post) => post._id !== id));
   };
 

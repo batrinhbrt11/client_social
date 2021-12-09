@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Share() {
   const classes = useStyles();
-  const { user } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
 
@@ -157,7 +157,9 @@ export default function Share() {
           desc: desc.current.value,
           img: link,
         };
-        await axios.post("/posts", newPost);
+        await axios.post("/posts", newPost, {
+          headers: { "x-access-token": token },
+        });
         window.location.reload();
       }
     } catch (err) {

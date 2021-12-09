@@ -110,6 +110,7 @@ export default function Navbar() {
   };
   const Logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     window.location.reload();
     setAnchorEl(null);
   };
@@ -141,12 +142,7 @@ export default function Navbar() {
             className={classes.searchButton}
             onClick={() => setOpen(true)}
           />
-          <Badge badgeContent={4} color="secondary" className={classes.badge}>
-            <MessageIcon className={classes.icon} />
-          </Badge>
-          <Badge badgeContent={4} color="secondary" className={classes.badge}>
-            <NotificationsIcon className={classes.icon} />
-          </Badge>
+
           <Link to={`/profile/${user._id}`}>
             <Avatar
               alt=""

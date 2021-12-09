@@ -13,15 +13,16 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-
+import { CircularProgress } from "@mui/material";
 export default function ProfileRight({ user, changeUser }) {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [friends, setFriends] = useState([]);
-  const { user: currentUser, dispatch } = useContext(AuthContext);
+  const { token, user: currentUser, dispatch } = useContext(AuthContext);
+
   const [followed, setFollowed] = useState(
     currentUser.followings.includes(user._id)
   );
-
+  const [loading, setLoading] = useState(false);
   const editName = useRef();
   const editCity = useRef();
   //edit info modal
@@ -38,6 +39,7 @@ export default function ProfileRight({ user, changeUser }) {
   const Edit_info = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       let name_edit = "";
       let city_edit = "";
       if (editName.current.value === "") {
@@ -52,17 +54,23 @@ export default function ProfileRight({ user, changeUser }) {
         city_edit = editCity.current.value;
       }
       const newInfo = {
-        userId: currentUser._id,
         username: name_edit,
         city: city_edit,
       };
 
-      await axios.put(`/users/${currentUser._id}`, newInfo);
+      await axios.put(
+        `/users/${currentUser._id}`,
+
+        newInfo,
+        { headers: { "x-access-token": token } }
+      );
 
       await dispatch({ type: "EDIT_INFO", payload: newInfo });
-      const res = await axios.get(`/users/${currentUser._id}`);
+      const res = await axios.get(`/users/${currentUser._id}`, {
+        headers: { "x-access-token": token },
+      });
       changeUser(res.data);
-
+      setLoading(false);
       handleClose();
     } catch (err) {
       console.log(err);
@@ -74,7 +82,9 @@ export default function ProfileRight({ user, changeUser }) {
     let isCancelled = false;
     const getFriends = async () => {
       try {
-        const friendList = await axios.get("/users/friends/" + user._id);
+        const friendList = await axios.get("/users/friends/" + user._id, {
+          headers: { "x-access-token": token },
+        });
         setFriends(friendList.data);
       } catch (err) {}
     };
@@ -122,45 +132,53 @@ export default function ProfileRight({ user, changeUser }) {
           <DialogTitle className="form_update_header">
             Sửa thông tin
           </DialogTitle>
-          <DialogContent>
-            <form className="form_update_info">
-              <div className="form_update_info-item">
-                <label htmlFor="fname" className="form_update_info-label">
-                  Tên hiển thị:
-                </label>
-                <input
-                  aria-label=""
-                  className="form_update_info-input"
-                  defaultValue={currentUser.username}
-                  ref={editName}
-                />
-              </div>
-              <div className="form_update_info-item">
-                <label htmlFor="faculty" className="form_update_info-label">
-                  Khoa:
-                </label>
-                <select className="form_update_info-input">
-                  <option value="0">Chọn khoa:</option>
-                  <option value="1">CNTT</option>
-                  <option value="2">DIen</option>
-                  <option value="2">abd</option>
-                </select>
-              </div>
-              <div className="form_update_info-item">
-                <label htmlFor="city" className="form_update_info-label">
-                  Thành phố:
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  className="form_update_info-input"
-                  defaultValue={currentUser.city}
-                  ref={editCity}
-                />
-              </div>
-            </form>
-          </DialogContent>
+
+          {loading ? (
+            <DialogContent className="loadingProgress">
+              <CircularProgress color="inherit" />
+            </DialogContent>
+          ) : (
+            <DialogContent>
+              <form className="form_update_info">
+                <div className="form_update_info-item">
+                  <label htmlFor="fname" className="form_update_info-label">
+                    Tên hiển thị:
+                  </label>
+                  <input
+                    aria-label=""
+                    className="form_update_info-input"
+                    defaultValue={currentUser.username}
+                    ref={editName}
+                  />
+                </div>
+                <div className="form_update_info-item">
+                  <label htmlFor="faculty" className="form_update_info-label">
+                    Khoa:
+                  </label>
+                  <select className="form_update_info-input">
+                    <option value="0">Chọn khoa:</option>
+                    <option value="1">CNTT</option>
+                    <option value="2">DIen</option>
+                    <option value="2">abd</option>
+                  </select>
+                </div>
+                <div className="form_update_info-item">
+                  <label htmlFor="city" className="form_update_info-label">
+                    Thành phố:
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    className="form_update_info-input"
+                    defaultValue={currentUser.city}
+                    ref={editCity}
+                  />
+                </div>
+              </form>
+            </DialogContent>
+          )}
+
           <DialogActions>
             <Button onClick={handleClose} className="button_cancel">
               Hủy
@@ -198,7 +216,7 @@ export default function ProfileRight({ user, changeUser }) {
                   alt=""
                   src={
                     friend.profilePicture
-                      ? PF + friend.profilePicture
+                      ? friend.profilePicture
                       : PF + "person/noAvartar.jpg"
                   }
                   className="rightbarFollowingImg"

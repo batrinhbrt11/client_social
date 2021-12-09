@@ -163,7 +163,7 @@ export default function Post({ post, delete_post }) {
   const [status, setStatus] = useState(post);
   const [like, setLike] = useState(status.likes.length);
   const [isLiked, setIsLiked] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const [onEdit, setOnEdit] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open_menu = Boolean(anchorEl);
@@ -201,7 +201,13 @@ export default function Post({ post, delete_post }) {
   };
   const likeHandle = () => {
     try {
-      axios.put("/posts/" + status._id + "/like", { userId: user._id });
+      axios.put(
+        "/posts/" + status._id + "/like",
+        { userId: user._id },
+        {
+          headers: { "x-access-token": token },
+        }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -218,7 +224,9 @@ export default function Post({ post, delete_post }) {
   }, [user._id, status.likes]);
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`/users/${status.userId}`);
+      const res = await axios.get(`/users/${status.userId}`, {
+        headers: { "x-access-token": token },
+      });
       setUserPost(res.data);
     };
     fetchUser();
@@ -240,8 +248,12 @@ export default function Post({ post, delete_post }) {
         userId: user._id,
         desc: desc.current.value,
       };
-      await axios.put(`/posts/${status._id}`, newPost);
-      const res = await axios.get(`/posts/${status._id}`);
+      await axios.put(`/posts/${status._id}`, newPost, {
+        headers: { "x-access-token": token },
+      });
+      const res = await axios.get(`/posts/${status._id}`, {
+        headers: { "x-access-token": token },
+      });
 
       setStatus(res.data);
     } catch (err) {
