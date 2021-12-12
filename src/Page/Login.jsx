@@ -10,7 +10,7 @@ export default function Login() {
   const handleClick = (e) => {
     e.preventDefault();
     loginCall(
-      { email: email.current.value, password: password.current.value },
+      { username: email.current.value, password: password.current.value },
       dispatch
     );
   };
@@ -26,7 +26,7 @@ export default function Login() {
             <input
               placeholder="Email"
               className="loginInput"
-              type="email"
+              type="text"
               ref={email}
               required
             />
