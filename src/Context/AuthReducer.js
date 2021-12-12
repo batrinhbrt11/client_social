@@ -8,7 +8,8 @@ const AuthReducer = (state, action) => {
       };
     case "LOGIN_SUCCESS":
       return {
-        user: action.payload,
+        token: action.payload.token,
+        user: action.payload.user,
         isFetching: false,
         error: false,
       };
@@ -36,6 +37,29 @@ const AuthReducer = (state, action) => {
           ),
         },
       };
+
+    case "EDIT_INFO":
+      const newUser = action.payload;
+
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          username: newUser.username,
+          city: newUser.city,
+        },
+      };
+    case "EDIT_AVT": {
+      const newUser = action.payload;
+      console.log(newUser.profilePicture);
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profilePicture: newUser.profilePicture,
+        },
+      };
+    }
     default:
       return state;
   }

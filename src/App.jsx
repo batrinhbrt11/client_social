@@ -12,22 +12,29 @@ import Dashboard from "./Page/Dashboard";
 import { AuthContext } from "./Context/AuthContext";
 
 function App() {
-  const { user } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
 
   return (
     <div>
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={user ? <Home /> : <Login />} />
-          <Route path="/profile/:id" element={<Profile />} />
+          <Route
+            exact
+            path="/"
+            element={token && user ? <Home /> : <Login />}
+          />
+          <Route
+            path="/profile/:id"
+            element={token && user ? <Profile /> : <Login />}
+          />
           <Route
             path="/login"
-            element={user ? <Navigate to="/" /> : <Login />}
+            element={token && user ? <Navigate to="/" /> : <Login />}
           />
           <Route path="/notification" element={<Notification />} />
           <Route
             path="/dashboard"
-            element={user ? <Navigate to="/" /> : <Dashboard />}
+            element={token && user ? <Navigate to="/" /> : <Dashboard />}
           />
         </Routes>
       </BrowserRouter>

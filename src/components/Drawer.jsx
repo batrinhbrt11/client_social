@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   SwipeableDrawer,
@@ -18,6 +18,7 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ListIcon from "@mui/icons-material/List";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../Context/AuthContext";
 const useStyles = makeStyles({
   list: {
     width: "250px",
@@ -44,6 +45,8 @@ const useStyles = makeStyles({
 export default function Drawer() {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
+  const { user } = useContext(AuthContext);
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <div>
       <IconButton
@@ -65,14 +68,18 @@ export default function Drawer() {
         onOpen={() => {}}
       >
         <div className={classes.list}>
-          <Link to="/profile">
+          <Link to={`/profile/${user._id}`}>
             <Box textAlign="center" p={2} className={classes.title}>
               <Avatar
-                alt="Cindy Baker"
-                src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
+                alt=""
+                src={
+                  user.profilePicture
+                    ? user.profilePicture
+                    : PF + "person/noAvartar.jpg"
+                }
                 className={classes.image}
               />
-              <span className={classes.title_text}>Name</span>
+              <span className={classes.title_text}>{user.username}</span>
             </Box>
           </Link>
           <Divider />
