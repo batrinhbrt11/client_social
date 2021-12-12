@@ -105,6 +105,9 @@ const useStyles = makeStyles((theme) => ({
     opacity: "0.7",
     color: "red",
   },
+  shareVideo: {
+    borderBottom: "1px solid black",
+  },
 }));
 
 export default function Share() {
@@ -112,7 +115,7 @@ export default function Share() {
   const { token, user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
-
+  const videoLink = useRef();
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const uploadFiles = (file) => {
@@ -147,20 +150,33 @@ export default function Share() {
 
     try {
       const link = await uploadFiles(file);
-      if (link === "" && desc.current.value === "") {
+      if (
+        link === "" &&
+        desc.current.value === "" &&
+        videoLink.current.value === ""
+      ) {
         return null;
       } else {
-        console.log(link);
-        console.log(desc);
-        const newPost = {
-          userId: user._id,
-          desc: desc.current.value,
-          img: link,
-        };
-        await axios.post("/posts", newPost, {
-          headers: { "x-access-token": token },
-        });
-        window.location.reload();
+        if (
+          videoLink.current.value === "" ||
+          videoLink.current.value.includes("https://www.youtube.com/watch?v=")
+        ) {
+          const newPost = {
+            userId: user._id,
+            desc: desc.current.value,
+            img: link,
+            video: videoLink.current.value.replace(
+              "https://www.youtube.com/watch?v=",
+              "https://www.youtube.com/embed/"
+            ),
+          };
+          await axios.post("/posts", newPost, {
+            headers: { "x-access-token": token },
+          });
+          window.location.reload();
+        } else {
+          alert("Link không hợp lệ vui lòng nhập lại");
+        }
       }
     } catch (err) {
       console.log(err);
@@ -186,7 +202,9 @@ export default function Share() {
             ref={desc}
           />
         </div>
+
         <Divider className={classes.divider} />
+
         {file && (
           <div className={classes.shareImgContainer}>
             <img
@@ -202,15 +220,6 @@ export default function Share() {
         )}
         <form className={classes.shareBottom} onSubmit={submitHandler}>
           <div className={classes.shareOptions}>
-            <div className={classes.shareOption}>
-              <VideoLibraryIcon
-                htmlColor="tomato"
-                className={classes.shareIcon}
-              />
-              <Typography variant="body1" className={classes.shareOptionText}>
-                Video
-              </Typography>
-            </div>
             <label htmlFor="file_img" className={classes.shareOption}>
               <PermMediaIcon htmlColor="green" className={classes.shareIcon} />
               <Typography variant="body1" className={classes.shareOptionText}>
@@ -225,15 +234,16 @@ export default function Share() {
               />
             </label>
             <div className={classes.shareOption}>
-              <EmojiEmotionsIcon
-                htmlColor="goldenrod"
-                className={classes.shareIcon}
+              <input
+                placeholder="Link video"
+                type="text"
+                className={classes.shareVideo}
+                id="file_img"
+                ref={videoLink}
               />
-              <Typography variant="body1" className={classes.shareOptionText}>
-                Feelings
-              </Typography>
             </div>
           </div>
+
           <Button type="submit" className={classes.shareButton}>
             Share
           </Button>

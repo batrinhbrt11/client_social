@@ -11,8 +11,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
+
 import { CircularProgress } from "@mui/material";
 export default function ProfileRight({ user, changeUser }) {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
@@ -79,18 +78,29 @@ export default function ProfileRight({ user, changeUser }) {
 
   //end edit info modal
   useEffect(() => {
-    let isCancelled = false;
+    const ourRequest = axios.CancelToken.source(); //1st step
+
     const getFriends = async () => {
       try {
-        const friendList = await axios.get("/users/friends/" + user._id, {
-          headers: { "x-access-token": token },
-        });
+        const friendList = await axios.get(
+          "/users/friends/" + user._id,
+          {
+            headers: { "x-access-token": token },
+          },
+          {
+            cancelToken: ourRequest.token, //2nd step
+          }
+        );
         setFriends(friendList.data);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
-    getFriends();
+    setTimeout(() => {
+      getFriends();
+    }, 3000);
     return () => {
-      isCancelled = true;
+      ourRequest.cancel("cancel by user"); //3rd step
     };
   }, [user]);
 
@@ -184,14 +194,14 @@ export default function ProfileRight({ user, changeUser }) {
               Hủy
             </Button>
             <Button onClick={(e) => Edit_info(e)} className="button_edit">
-              Sửa
+              Đồng ý
             </Button>
           </DialogActions>
         </Dialog>
         <div className="rightbarInfo">
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Khoa:</span>
-            <span className="rightbarInfoValue">{user.department}</span>
+            <span className="rightbarInfoValue">{user.faculty}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Chức vụ:</span>
@@ -210,7 +220,7 @@ export default function ProfileRight({ user, changeUser }) {
         <h4 className="rightbarTitle">Bạn bè</h4>
         <div className="rightbarFollowings">
           {friends.map((friend) => (
-            <Link to={"/profile/" + friend._id}>
+            <Link key={friend._id} to={"/profile/" + friend._id}>
               <div className="rightbarFollowing">
                 <img
                   alt=""

@@ -143,3 +143,32 @@
     border-bottom: 1px solid black;
     margin-bottom: 20px !important  ;
 }
+.success {
+    color: rgb(63, 194, 63);
+    font-size: 1.25rem;
+    display: block;
+    text-align: center;
+}
+.success_sub {
+    font-size: 1.25rem;
+    display: block;
+    text-align: center;
+}
+.success_container {
+    display: block;
+    margin: 0 auto;
+}
+.icon_loading {
+    display: inline;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
+}
+span.MuiCircularProgress-root.MuiCircularProgress-indeterminate.MuiCircularProgress-colorInherit.css-62e83j-MuiCircularProgress-root {
+    display: block;
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
+    margin: 0 auto;
+    width: 40px;
+    height: 40px;
+}

@@ -62,6 +62,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "transparent",
     padding: "5px",
   },
+  menuItem: {
+    display: "block",
+    margin: "0 auto",
+    padding: "5px",
+    textAlign: "center",
+  },
 }));
 
 export default function Comment() {
@@ -156,8 +162,10 @@ export default function Comment() {
           }}
           className={classes.subMenu}
         >
-          <MenuItem>Xóa bình luận</MenuItem>
-          <MenuItem onClick={(e) => Edit_cmt(e)}>Sửa bình luận</MenuItem>
+          <MenuItem className={classes.menuItem}>Xóa bình luận</MenuItem>
+          <MenuItem onClick={(e) => Edit_cmt(e)} className={classes.menuItem}>
+            Sửa bình luận
+          </MenuItem>
         </Menu>
       </div>
     </div>

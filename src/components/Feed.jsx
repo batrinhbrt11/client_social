@@ -33,7 +33,7 @@ export default function Feed({ userId }) {
               }
             )
           : await axios.get(
-              `posts/timeline/${user._id}?page=1`,
+              `posts/timeline?page=1`,
               {
                 headers: { "x-access-token": token },
               },
@@ -66,7 +66,7 @@ export default function Feed({ userId }) {
       ? await axios.get(`/posts/profile/${userId}?page=${page}`, {
           headers: { "x-access-token": token },
         })
-      : await axios.get(`posts/timeline/${user._id}?page=${page}`, {
+      : await axios.get(`posts/timeline?page=${page}`, {
           headers: { "x-access-token": token },
         });
     const postData2 = res.data;
@@ -82,17 +82,23 @@ export default function Feed({ userId }) {
     setPage(page + 1);
   };
   const Delete_Posts = async (id) => {
-    const data = {
-      userId: user._id,
-    };
-    const res = await axios.delete(
-      `posts/${id}`,
-      { data },
-      {
-        headers: { "x-access-token": token },
-      }
-    );
-    setPosts(posts.filter((post) => post._id !== id));
+    try {
+      const data = {
+        userId: user._id,
+      };
+
+      await axios.delete(
+        `/posts/${id}`,
+        { data },
+        {
+          headers: { "x-access-token": token },
+        }
+      );
+
+      setPosts(posts.filter((post) => post._id !== id));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

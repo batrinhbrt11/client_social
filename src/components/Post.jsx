@@ -24,6 +24,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
+
+import Carousel from "nuka-carousel";
 const useStyles = makeStyles((theme) => ({
   post: {
     marginTop: theme.spacing(3),
@@ -153,6 +155,28 @@ const useStyles = makeStyles((theme) => ({
       color: "black !important",
     },
   },
+  menuItem: {
+    display: "block",
+    margin: "0 auto",
+    padding: "5px",
+    textAlign: "center",
+  },
+  iframeContainer: {
+    position: "relative",
+    width: "100%",
+    overflow: "hidden",
+    paddingTop: "100%",
+  },
+  iframeItem: {
+    position: " absolute",
+    top: "0",
+    left: "0",
+    bottom: "0",
+    right: "0",
+    width: "100%",
+    height: "100%",
+    border: "none",
+  },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -223,13 +247,23 @@ export default function Post({ post, delete_post }) {
     setIsLiked(status.likes.includes(user._id));
   }, [user._id, status.likes]);
   useEffect(() => {
+    const ourRequest = axios.CancelToken.source(); //1st step
     const fetchUser = async () => {
-      const res = await axios.get(`/users/${status.userId}`, {
-        headers: { "x-access-token": token },
-      });
+      const res = await axios.get(
+        `/users/${status.userId}`,
+        {
+          headers: { "x-access-token": token },
+        },
+        {
+          cancelToken: ourRequest.token, //2nd step
+        }
+      );
       setUserPost(res.data);
     };
     fetchUser();
+    return () => {
+      ourRequest.cancel("cancel by user"); //3rd step
+    };
   }, [status.userId]);
 
   const Edit_post = (e) => {
@@ -307,7 +341,7 @@ export default function Post({ post, delete_post }) {
                 }}
                 className={classes.subMenu}
               >
-                <div>
+                <div className={classes.menuItem}>
                   <MenuItem onClick={handleOpenDelete}>Xóa bài viết</MenuItem>
                   <Dialog
                     open={openDelete}
@@ -338,7 +372,7 @@ export default function Post({ post, delete_post }) {
                     </DialogActions>
                   </Dialog>
                 </div>
-                <div>
+                <div className={classes.menuItem}>
                   <MenuItem onClick={handleOpenEdit}>Sửa bài viết</MenuItem>
                   <Dialog
                     open={openEdit}
@@ -392,7 +426,34 @@ export default function Post({ post, delete_post }) {
             disabled
           />
           {/* <Typography>{status.desc}</Typography> */}
-          <img src={status.img} alt="" className={classes.postImg} />
+          {!status.video && status.img && (
+            <img src={status.img} alt="" className={classes.postImg} />
+          )}
+
+          {status.video && !status.img && (
+            <div className={classes.iframeContainer}>
+              <iframe
+                className={classes.iframeItem}
+                src={status.video}
+                frameborder="0"
+              ></iframe>
+            </div>
+          )}
+          {status.video && status.img && (
+            <Carousel>
+              <div className={classes.iframeContainer}>
+                <img src={status.img} alt="" className={classes.iframeItem} />
+              </div>
+
+              <div className={classes.iframeContainer}>
+                <iframe
+                  className={classes.iframeItem}
+                  src={status.video}
+                  frameborder="0"
+                ></iframe>
+              </div>
+            </Carousel>
+          )}
         </div>
 
         <div className={classes.postBottom}>
