@@ -37,18 +37,19 @@ export default function Login() {
 
   const handleClickRegister = async (e) => {
     e.preventDefault();
-
+    const username_gg = google.email.slice(0, 8);
     try {
       const newUser = {
         name: google.name,
-        username: google.email.slice(0, 8),
+        username: username_gg,
         authId: google.googleId,
         profilePicture: google.imageUrl,
         email: google.email,
         password: password.current.value,
       };
 
-      const res = await axios.post("/auth/register", newUser);
+      const res = await axios.post("auth/register", newUser);
+
       loginCall(
         {
           username: google.email.slice(0, 8),
