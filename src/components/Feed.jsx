@@ -48,6 +48,13 @@ export default function Feed({ userId }) {
         if (axios.isCancel(err)) {
           console.log("Requet cancel", err.message);
         }
+
+        if (err.response.status === 401) {
+          localStorage.removeItem("user");
+
+          localStorage.removeItem("token");
+          window.location.reload();
+        }
       }
     };
     window.scrollTo(0, 0);
