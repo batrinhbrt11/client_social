@@ -15,8 +15,9 @@ export default function Login() {
 
   const handleClick = (e) => {
     e.preventDefault();
+    console.log(email.current.value);
     loginCall(
-      { username: email.current.value, password: password.current.value },
+      { email: email.current.value, password: password.current.value },
       dispatch
     );
   };
@@ -46,7 +47,7 @@ export default function Login() {
         password: password.current.value,
       };
 
-      const res = await axios.post("auth/register", newUser);
+      const res = await axios.post("/auth/register", newUser);
       loginCall(
         { email: google.email, password: password.current.value },
         dispatch
@@ -66,34 +67,6 @@ export default function Login() {
         <div className="loginLeft">
           <h3 className="loginLogo">Social Social Club</h3>
         </div>
-<<<<<<< HEAD
-        <div className="loginRight">
-          <form className="loginBox" onSubmit={handleClick}>
-            <input
-              placeholder="Email"
-              className="loginInput"
-              type="text"
-              ref={email}
-              required
-            />
-            <input
-              placeholder="Password"
-              className="loginInput"
-              type="password"
-              ref={password}
-              minLength="6"
-              required
-            />
-            <button className="loginButton" type="submit" disabled={isFetching}>
-              {isFetching ? <CircularProgress color="inherit" /> : "Đăng nhập"}
-            </button>
-            <span className="loginForgot">Quên mật khẩu</span>
-            <button className="googleButton">
-              {isFetching ? <CircularProgress color="inherit" /> : "Google"}
-            </button>
-          </form>
-        </div>
-=======
         {inputPassword ? (
           <div className="loginRight">
             <form className="loginBox" onSubmit={handleClickRegister}>
@@ -171,7 +144,6 @@ export default function Login() {
             </form>
           </div>
         )}
->>>>>>> bda833dbf38ae14e36de0f6f98d04fade67aa4f0
       </div>
     </div>
   );
