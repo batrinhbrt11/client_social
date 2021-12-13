@@ -249,7 +249,7 @@ export default function ProfileImage({ user, changeUser }) {
         </Button>
       </div>
       <div className={classes.profileInfo}>
-        <h4 className={classes.profileInfoName}>{user.username}</h4>
+        <h4 className={classes.profileInfoName}>{user.name}</h4>
       </div>
 
       {/* modalAvt */}

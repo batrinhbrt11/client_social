@@ -312,7 +312,7 @@ export default function Post({ post, delete_post }) {
 
             <Link to={`/profile/${userPost._id}`}>
               <Typography variant="body1" className={classes.postUsername}>
-                {userPost.username}
+                {userPost.name}
               </Typography>
             </Link>
             <Typography variant="body1" className={classes.postTime}>

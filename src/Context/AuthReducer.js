@@ -45,7 +45,7 @@ const AuthReducer = (state, action) => {
         ...state,
         user: {
           ...state.user,
-          username: newUser.username,
+          name: newUser.name,
           city: newUser.city,
         },
       };

@@ -6,7 +6,7 @@ import { CircularProgress } from "@mui/material";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
 export default function Login() {
-  const email = useRef();
+  const username = useRef();
   const password = useRef();
   const { user, isFetching, error, dispatch } = useContext(AuthContext);
   const [google, setGoogle] = useState({});
@@ -15,9 +15,9 @@ export default function Login() {
 
   const handleClick = (e) => {
     e.preventDefault();
-    console.log(email.current.value);
+    console.log(username.current.value);
     loginCall(
-      { email: email.current.value, password: password.current.value },
+      { username: username.current.value, password: password.current.value },
       dispatch
     );
   };
@@ -40,7 +40,8 @@ export default function Login() {
 
     try {
       const newUser = {
-        username: google.name,
+        name: google.name,
+        username: google.email.slice(0, 8),
         authId: google.googleId,
         profilePicture: google.imageUrl,
         email: google.email,
@@ -49,7 +50,10 @@ export default function Login() {
 
       const res = await axios.post("/auth/register", newUser);
       loginCall(
-        { email: google.email, password: password.current.value },
+        {
+          username: google.email.slice(0, 8),
+          password: password.current.value,
+        },
         dispatch
       );
     } catch (err) {
@@ -107,8 +111,7 @@ export default function Login() {
                 id="input"
                 placeholder="Tài khoản"
                 className="loginInput"
-                type="email"
-                ref={email}
+                ref={username}
                 required
               />
               <input

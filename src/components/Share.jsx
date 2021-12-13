@@ -197,7 +197,7 @@ export default function Share() {
           />
 
           <TextareaAutosize
-            placeholder={"What's new, " + user.username + "?"}
+            placeholder={"What's new, " + user.name + "?"}
             className={classes.shareInput}
             ref={desc}
           />

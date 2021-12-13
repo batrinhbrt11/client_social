@@ -42,7 +42,7 @@ export default function ProfileRight({ user, changeUser }) {
       let name_edit = "";
       let city_edit = "";
       if (editName.current.value === "") {
-        name_edit = currentUser.username;
+        name_edit = currentUser.name;
       } else {
         name_edit = editName.current.value;
       }
@@ -53,7 +53,7 @@ export default function ProfileRight({ user, changeUser }) {
         city_edit = editCity.current.value;
       }
       const newInfo = {
-        username: name_edit,
+        name: name_edit,
         city: city_edit,
       };
 
@@ -157,7 +157,7 @@ export default function ProfileRight({ user, changeUser }) {
                   <input
                     aria-label=""
                     className="form_update_info-input"
-                    defaultValue={currentUser.username}
+                    defaultValue={currentUser.name}
                     ref={editName}
                   />
                 </div>
@@ -231,7 +231,7 @@ export default function ProfileRight({ user, changeUser }) {
                   }
                   className="rightbarFollowingImg"
                 />
-                <span className="rightbarFollowingName">{friend.username}</span>
+                <span className="rightbarFollowingName">{friend.name}</span>
               </div>
             </Link>
           ))}

@@ -96,7 +96,7 @@ export default function Leftbar() {
             }
             className={classes.image}
           />
-          <span className={classes.title_text}>{user.username}</span>
+          <span className={classes.title_text}>{user.name}</span>
         </Box>
       </Link>
       <Divider />
