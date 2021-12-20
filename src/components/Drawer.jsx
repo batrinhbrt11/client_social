@@ -136,23 +136,25 @@ export default function Drawer() {
                 />
               </ListItem>
             </Link>
-            <Link to="/dashboard">
-              <ListItem className={classes.listItem}>
-                <ListItemIcon>
-                  <AdminPanelSettingsIcon className={classes.icon} />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="body1"
-                      className={classes.listItemText}
-                    >
-                      Quản trị
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            </Link>
+            {user.authorize === 1 && (
+              <Link to="/dashboard">
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <AdminPanelSettingsIcon className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="body1"
+                        className={classes.listItemText}
+                      >
+                        Quản trị
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              </Link>
+            )}
           </List>
         </div>
       </SwipeableDrawer>

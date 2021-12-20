@@ -34,7 +34,7 @@ function App() {
           <Route path="/notification" element={<Notification />} />
           <Route
             path="/dashboard"
-            element={token && user ? <Navigate to="/" /> : <Dashboard />}
+            element={token && user ? <Dashboard /> : <Login />}
           />
         </Routes>
       </BrowserRouter>

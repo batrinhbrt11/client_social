@@ -169,7 +169,6 @@ export default function Navbar() {
         setTimeout(() => {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
-
           window.location.reload();
         }, 2000);
       } catch (err) {

@@ -66,6 +66,7 @@ export default function Feed({ userId }) {
       ourRequest.cancel("cancel by user"); //3rd step
     };
   }, [userId, user._id]);
+
   let [page, setPage] = useState(2);
   const [noMore, setNoMore] = useState(true);
   const fetchPosts2 = async () => {

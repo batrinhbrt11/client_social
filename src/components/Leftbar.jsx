@@ -124,14 +124,16 @@ export default function Leftbar() {
           </Typography>
         </div>
       </Link>
-      <Link to="/dashboard">
-        <div className={classes.item}>
-          <AdminPanelSettingsIcon className={classes.icon} />
-          <Typography variant="body1" className={classes.text}>
-            Quản trị{" "}
-          </Typography>
-        </div>
-      </Link>
+      {user.authorize === 1 && (
+        <Link to="/dashboard">
+          <div className={classes.item}>
+            <AdminPanelSettingsIcon className={classes.icon} />
+            <Typography variant="body1" className={classes.text}>
+              Quản trị
+            </Typography>
+          </div>
+        </Link>
+      )}
     </Container>
   );
 }

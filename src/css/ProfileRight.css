@@ -130,6 +130,9 @@
     .form_update_info-item {
         display: block;
     }
+    .form_update_info-label {
+        display: block;
+    }
     .form_update_info-input {
         margin-left: 0;
     }
@@ -171,4 +174,15 @@ span.MuiCircularProgress-root.MuiCircularProgress-indeterminate.MuiCircularProgr
     margin: 0 auto;
     width: 40px;
     height: 40px;
+}
+.successNotification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(183, 240, 183);
+    padding: 5px 10px;
+    color: rgb(46, 125, 50);
+    font-size: 1rem;
+    font-style: italic;
+    border-radius: 16px;
 }
