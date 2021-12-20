@@ -10,6 +10,8 @@ import Home from "./Page/Home";
 import Notification from "./Page/Notification";
 import Dashboard from "./Page/Dashboard";
 import { AuthContext } from "./Context/AuthContext";
+import Falcuty from "./Page/Falcuty";
+import AddNotification from "./Page/AddNotification";
 
 function App() {
   const { token, user } = useContext(AuthContext);
@@ -35,6 +37,16 @@ function App() {
           <Route
             path="/dashboard"
             element={token && user ? <Dashboard /> : <Login />}
+          />
+          <Route
+            exact
+            path="/falcuty"
+            element={token && user ? <Falcuty /> : <Login />}
+          />
+          <Route
+            exact
+            path="/falcuty/notification/add"
+            element={token && user ? <AddNotification /> : <Login />}
           />
         </Routes>
       </BrowserRouter>
