@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   shareInput: {
     border: "none",
     width: "80%",
+    resize: "none",
     "&:focus": {
       outLine: "none",
     },

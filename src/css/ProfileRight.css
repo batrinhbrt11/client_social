@@ -107,6 +107,7 @@
     display: flex;
     font-size: 1.25rem;
     justify-content: space-between;
+    margin-top: 10px;
 }
 .form_update_info-label {
     font-weight: 600;

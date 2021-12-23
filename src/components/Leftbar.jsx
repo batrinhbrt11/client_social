@@ -16,6 +16,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ListIcon from "@mui/icons-material/List";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 const useStyles = makeStyles((theme) => ({
   container: {
     height: "100vh",
@@ -130,6 +131,16 @@ export default function Leftbar() {
             <AdminPanelSettingsIcon className={classes.icon} />
             <Typography variant="body1" className={classes.text}>
               Quản trị
+            </Typography>
+          </div>
+        </Link>
+      )}
+      {user.authorize === 2 && (
+        <Link to="/falcuty">
+          <div className={classes.item}>
+            <ManageAccountsIcon className={classes.icon} />
+            <Typography variant="body1" className={classes.text}>
+              Quản lý
             </Typography>
           </div>
         </Link>

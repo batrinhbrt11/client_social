@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Grid, makeStyles } from "@material-ui/core";
 import Button from "@mui/material/Button";
@@ -6,6 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   DialogTitle,
   DialogContentText,
@@ -14,6 +15,9 @@ import {
   Dialog,
   TextField,
 } from "@mui/material/";
+import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
+import "../css/ProfileRight.css";
 const useStyles = makeStyles((theme) => ({
   dataTable: {
     marginTop: "30px",
@@ -61,24 +65,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-//call api get all
-const data = [
-  { id: 1, firstName: "Jon" },
-  { id: 2, firstName: "Cersei" },
-  { id: 3, firstName: "Jaime" },
-  { id: 4, firstName: "Arya" },
-  { id: 5, firstName: "Daenerys" },
-  { id: 6, firstName: null },
-  { id: 7, firstName: "Ferrara" },
-  { id: 8, firstName: "Rossini" },
-  { id: 9, firstName: "Harvey" },
-];
 
 export default function ManageFaculty() {
   const classes = useStyles();
-  const [rows, setRows] = useState(data);
+  const { token } = useContext(AuthContext);
+  const [rows, setRows] = useState([]);
+  const [error, setError] = useState("");
   const [selectionModel, setSelectionModel] = useState([]);
   const [editRow, setEditRow] = useState({});
+  const [success, setSuccess] = useState("");
   const editName = useRef();
   const addName = useRef();
   //edit dialog
@@ -98,7 +93,7 @@ export default function ManageFaculty() {
     { field: "id", headerName: "ID", width: 100, flex: 0.3 },
 
     {
-      field: "firstName",
+      field: "name",
       headerName: "Tên khoa",
       sortable: false,
       width: 300,
@@ -106,37 +101,121 @@ export default function ManageFaculty() {
     },
   ];
 
-  const handleEditRow = (e) => {
+  const handleEditRow = async (e) => {
     e.preventDefault();
-    //call api here
 
+    const newFac = {
+      name: editName.current.value,
+    };
+    //call api here
+    await axios.put(`/admin/faculties/${editRow.id}`, newFac, {
+      headers: { Authorization: "Bearer " + token },
+    });
     //
-    editRow.firstName = editName.current.value;
+    const res = await axios.get("/admin/faculties");
+    setRows(res.data);
+    setSuccess("Sửa danh mục thành công");
     handleClose();
   };
 
-  const handleDeleteRow = (e) => {
+  const handleDeleteRow = async (e) => {
+    //call api here
     e.preventDefault();
+
     const selectedIDs = new Set(selectionModel);
     //call api here
 
-    //
+    var config = {
+      method: "delete",
+      url: "/admin/faculties/delete",
+      headers: { Authorization: "Bearer " + token },
+      data: {
+        ids: Array.from(selectedIDs),
+      },
+    };
 
-    setRows((r) => r.filter((x) => !selectedIDs.has(x.id)));
-    handleClose();
+    await axios(config)
+      .then(function (res) {
+        setRows(res.data);
+        handleClose();
+        setSuccess("Xóa khoa thành công");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    //
   };
 
-  const handleAddRow = (e) => {
+  const handleAddRow = async (e) => {
     e.preventDefault();
     //call api
+    try {
+      if (addName.current.value === "") {
+        setError("Điền tên khoa");
+      } else {
+        const newFac = {
+          name: addName.current.value,
+        };
+        await axios.post("/admin/faculties/add", newFac, {
+          headers: { Authorization: "Bearer " + token },
+        });
+        //
+        const res = await axios.get("/admin/faculties");
+        setRows(res.data);
+        handleClose();
+        setSuccess("Thêm khoa thành công");
+      }
+    } catch {
+      setError("Tên khoa đã tồn tại");
+    }
     //
-    const obj = { id: 2, firstName: addName.current.value };
-    const newData = [...rows, obj];
-    setRows(newData);
-    console.log(newData);
   };
+
+  //call api
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("/admin/faculties");
+        const data = res.data;
+        setRows(data);
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          console.log("Requet cancel", err.message);
+        }
+
+        if (err.response.status === 401) {
+          localStorage.removeItem("user");
+
+          localStorage.removeItem("token");
+          window.location.reload();
+        }
+      }
+    };
+    fetchData();
+  }, []);
+
+  const rowData = rows.map((d) => {
+    return {
+      id: d._id,
+      name: d.name,
+    };
+  });
+  //end call api
   return (
     <div style={{ height: 400, width: "100%" }}>
+      {success && (
+        <div className="successNotification">
+          <span>{success}</span>
+          <IconButton
+            color="success"
+            aria-label="upload picture"
+            component="span"
+            onClick={(e) => setSuccess("")}
+          >
+            <CloseIcon />
+          </IconButton>
+        </div>
+      )}
       <div>
         <Button
           startIcon={<AddIcon />}
@@ -163,7 +242,7 @@ export default function ManageFaculty() {
             if (selectionModel.length !== 1) {
               window.alert("Vui lòng chọn 1 hàng");
             } else {
-              const result = rows.find(({ id }) => id === selectedIDs[0]);
+              const result = rowData.find(({ id }) => id === selectedIDs[0]);
               setEditRow(result);
               handleClickOpen("Edit");
             }
@@ -174,7 +253,7 @@ export default function ManageFaculty() {
       </div>
 
       <DataGrid
-        rows={rows}
+        rows={rowData}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
@@ -196,7 +275,7 @@ export default function ManageFaculty() {
               className="form_update_info-input"
               type="text"
               ref={editName}
-              defaultValue={editRow.firstName}
+              defaultValue={editRow.name}
             />
           </DialogContent>
           <DialogActions>
@@ -231,15 +310,21 @@ export default function ManageFaculty() {
           <DialogTitle>Thêm khoa</DialogTitle>
 
           <DialogContent>
-            <label htmlFor="fname" className="form_update_info-label">
-              Tên khoa
-            </label>
-            <input
-              aria-label=""
-              className="form_update_info-input"
-              type="text"
-              ref={addName}
-            />
+            {error && <span className="error">{error}</span>}
+            <form className="form_update_info">
+              <div className="form_update_info-item">
+                <label htmlFor="fname" className="form_update_info-label">
+                  Tên khoa
+                </label>
+                <input
+                  aria-label=""
+                  className="form_update_info-input"
+                  type="text"
+                  ref={addName}
+                  onClick={(e) => setError("")}
+                />
+              </div>
+            </form>
           </DialogContent>
 
           <DialogActions>

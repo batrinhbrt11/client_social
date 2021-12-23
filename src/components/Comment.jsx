@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: "transparent",
     padding: "5px",
+    resize: "none",
   },
   menuItem: {
     display: "block",

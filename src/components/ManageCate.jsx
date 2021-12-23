@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Grid, makeStyles } from "@material-ui/core";
 import Button from "@mui/material/Button";
@@ -6,6 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   DialogTitle,
   DialogContentText,
@@ -14,6 +15,9 @@ import {
   Dialog,
   TextField,
 } from "@mui/material/";
+import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
+import "../css/ProfileRight.css";
 const useStyles = makeStyles((theme) => ({
   dataTable: {
     marginTop: "30px",
@@ -53,22 +57,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-const data = [
-  { id: 1, name: "Jon" },
-  { id: 2, name: "Cersei" },
-  { id: 3, name: "Jaime" },
-  { id: 4, name: "Arya" },
-  { id: 5, name: "Daenerys" },
-  { id: 6, name: null },
-  { id: 7, name: "Ferrara" },
-  { id: 8, name: "Rossini" },
-  { id: 9, name: "Harvey" },
-];
+
 export default function ManageCate() {
   const classes = useStyles();
-  const [rows, setRows] = useState(data);
+  const { token } = useContext(AuthContext);
+  const [rows, setRows] = useState([]);
+  const [error, setError] = useState("");
   const [selectionModel, setSelectionModel] = useState([]);
   const [editRow, setEditRow] = useState({});
+  const [success, setSuccess] = useState("");
   const editName = useRef();
   const addName = useRef();
   //edit dialog
@@ -95,37 +92,121 @@ export default function ManageCate() {
       flex: 1,
     },
   ];
-  const handleEditRow = (e) => {
+  const handleEditRow = async (e) => {
     e.preventDefault();
-    //call api here
 
+    const newCate = {
+      name: editName.current.value,
+    };
+    //call api here
+    await axios.put(`/admin/categories/${editRow.id}`, newCate, {
+      headers: { Authorization: "Bearer " + token },
+    });
     //
-    editRow.name = editName.current.value;
+    const res = await axios.get("/admin/categories");
+    setRows(res.data);
+    setSuccess("Sửa danh mục thành công");
     handleClose();
   };
 
-  const handleDeleteRow = (e) => {
+  const handleDeleteRow = async (e) => {
     e.preventDefault();
+
     const selectedIDs = new Set(selectionModel);
     //call api here
 
-    //
+    var config = {
+      method: "delete",
+      url: "/admin/categories/delete",
+      headers: { Authorization: "Bearer " + token },
+      data: {
+        ids: Array.from(selectedIDs),
+      },
+    };
 
-    setRows((r) => r.filter((x) => !selectedIDs.has(x.id)));
-    handleClose();
+    await axios(config)
+      .then(function (res) {
+        setRows(res.data);
+        handleClose();
+        setSuccess("Xóa danh mục thành công");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
-  const handleAddRow = (e) => {
+  const handleAddRow = async (e) => {
     e.preventDefault();
     //call api
+    try {
+      if (addName.current.value === "") {
+        setError("Điền tên danh mục");
+      } else {
+        const newCate = {
+          name: addName.current.value,
+        };
+        await axios.post("/admin/categories/add", newCate, {
+          headers: { Authorization: "Bearer " + token },
+        });
+        //
+        const res = await axios.get("/admin/categories");
+        setRows(res.data);
+        handleClose();
+        setSuccess("Thêm danh mục thành công");
+      }
+    } catch {
+      setError("Tên danh mục đã tồn tại");
+    }
     //
-    const obj = { id: 2, name: addName.current.value };
-    const newData = [...rows, obj];
-    setRows(newData);
-    console.log(newData);
   };
+
+  //call api
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("/admin/categories");
+        const data = res.data;
+        setRows(data);
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          console.log("Requet cancel", err.message);
+        }
+
+        if (err.response.status === 401) {
+          localStorage.removeItem("user");
+
+          localStorage.removeItem("token");
+          window.location.reload();
+        }
+      }
+    };
+    fetchData();
+  }, []);
+
+  //end call api
+
+  const rowData = rows.map((d) => {
+    return {
+      id: d._id,
+      name: d.name,
+    };
+  });
   return (
     <div style={{ height: 400, width: "100%" }}>
+      {success && (
+        <div className="successNotification">
+          <span>{success}</span>
+          <IconButton
+            color="success"
+            aria-label="upload picture"
+            component="span"
+            onClick={(e) => setSuccess("")}
+          >
+            <CloseIcon />
+          </IconButton>
+        </div>
+      )}
+
       <div>
         <Button
           startIcon={<AddIcon />}
@@ -152,8 +233,9 @@ export default function ManageCate() {
             if (selectionModel.length !== 1) {
               window.alert("Vui lòng chọn 1 hàng");
             } else {
-              const result = rows.find(({ id }) => id === selectedIDs[0]);
+              const result = rowData.find(({ id }) => id === selectedIDs[0]);
               setEditRow(result);
+
               handleClickOpen("Edit");
             }
           }}
@@ -163,7 +245,7 @@ export default function ManageCate() {
       </div>
 
       <DataGrid
-        rows={rows}
+        rows={rowData}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
@@ -220,15 +302,21 @@ export default function ManageCate() {
           <DialogTitle>Thêm danh mục</DialogTitle>
 
           <DialogContent>
-            <label htmlFor="fname" className="form_update_info-label">
-              Tên danh mục
-            </label>
-            <input
-              aria-label=""
-              className="form_update_info-input"
-              type="text"
-              ref={addName}
-            />
+            {error && <span className="error">{error}</span>}
+            <form className="form_update_info">
+              <div className="form_update_info-item">
+                <label htmlFor="fname" className="form_update_info-label">
+                  Tên danh mục
+                </label>
+                <input
+                  aria-label=""
+                  className="form_update_info-input"
+                  type="text"
+                  ref={addName}
+                  onClick={(e) => setError("")}
+                />
+              </div>
+            </form>
           </DialogContent>
 
           <DialogActions>

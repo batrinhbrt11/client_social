@@ -78,11 +78,8 @@ export default function MangeUser() {
   const addUserName = useRef();
   const addPassword = useRef();
   const addAuth = useRef();
-
-  const [value, setValue] = useState([
-    { id: "10", text: "One" },
-    { id: "20", text: "Two" },
-  ]);
+  const addFac = useRef();
+  const [value, setValue] = useState([]);
 
   //edit dialog
   const [open, setOpen] = useState(false);
@@ -116,7 +113,7 @@ export default function MangeUser() {
     },
     {
       field: "authorize",
-      headerName: "Chức năng",
+      headerName: "Chức vụ",
 
       sortable: false,
       width: 300,
@@ -132,16 +129,26 @@ export default function MangeUser() {
   ];
   const handleEditRow = async (e) => {
     e.preventDefault();
+    let arr = [];
+    const arrValue = value.find((val) => {
+      const idObject = { _id: val._id };
+      arr.push(idObject);
+    });
+    console.log(arr);
     const newUser = {
       name: editName.current.value,
-      value: value,
+      categories: arr,
     };
     //call api here
     await axios.put(`/users/${editRow.id}`, newUser, {
       headers: { "x-access-token": token },
     });
     //
-    editRow.name = editName.current.value;
+    const res = await axios.get("/users", {
+      headers: { "x-access-token": token },
+    });
+    setRows(res.data);
+    setSuccess("Sửa người dùng thành công");
     handleClose();
   };
 
@@ -191,6 +198,13 @@ export default function MangeUser() {
         setError("Không đươc để trống tên tài khoản ");
       } else if (addPassword.current.value.length < 6) {
         setError("Độ dài mật khẩu phải lớn hơn 6 ");
+      } else if (addAuth.current.value === "0") {
+        setError("Chọn chức vụ ");
+      } else if (
+        addAuth.current.value === "2" &&
+        addFac.current.value === "0"
+      ) {
+        setError("Chọn khoa");
       } else {
         const newUser = {
           name: addName.current.value,
@@ -198,6 +212,7 @@ export default function MangeUser() {
           email: addEmail.current.value,
           password: addPassword.current.value,
           authorize: addAuth.current.value,
+          faculty: addFac.current.value,
         };
         await axios.post("/users", newUser, {
           headers: { "x-access-token": token },
@@ -214,46 +229,48 @@ export default function MangeUser() {
       setError("Tài khoản đã tồn tại");
     }
   };
+  //get user
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get("/users", {
+        headers: { "x-access-token": token },
+      });
+      const data = res.data;
+      setRows(data);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
 
+  //get Faculty
+  const [faculties, setFaculties] = useState([]);
+  const fetchFaculty = async () => {
+    try {
+      const res = await axios.get("/admin/faculties");
+      const data = res.data;
+      setFaculties(data);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
+  const [categories, setCategories] = useState([]);
+  const fetchCate = async () => {
+    try {
+      const res = await axios.get("/admin/categories");
+      const data = res.data;
+      setCategories(data);
+    } catch (err) {
+      console.log("Requet cancel");
+    }
+  };
   //call api
   useEffect(() => {
-    const ourRequest = axios.CancelToken.source(); //1st step
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "/users",
-          {
-            headers: { "x-access-token": token },
-          },
-          {
-            cancelToken: ourRequest.token,
-          }
-        );
-        const data = res.data;
-        setRows(data);
-      } catch (err) {
-        if (axios.isCancel(err)) {
-          console.log("Requet cancel", err.message);
-        }
-
-        if (err.response.status === 401) {
-          localStorage.removeItem("user");
-
-          localStorage.removeItem("token");
-          window.location.reload();
-        }
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      ourRequest.cancel("cancel by user"); //3rd step
-    };
+    fetchCate();
+    fetchFaculty();
+    fetchUser();
   }, []);
 
   //end call api
-
   //format data from api
   const rowData = rows.map((d) => {
     let author = "";
@@ -264,11 +281,23 @@ export default function MangeUser() {
     } else if (d.authorize === 1) {
       author = "Quản trị";
     }
+    let fac = "";
+
+    if (!d.faculty) {
+      fac = "";
+    } else {
+      let facul = faculties.find((f) => f._id === d.faculty);
+      fac = facul.name;
+    }
+
     return {
+      key: d._id,
       id: d._id,
       name: d.name,
       username: d.username,
       authorize: author,
+      faculty: fac,
+      categories: d.categories,
     };
   });
 
@@ -315,8 +344,20 @@ export default function MangeUser() {
               window.alert("Vui lòng chọn 1 hàng");
             } else {
               const result = rowData.find(({ id }) => id === selectedIDs[0]);
+              // suawr
+              if (result.categories.length !== 0) {
+                let arr = [];
+                const array_1 = result.categories.find((obj) => {
+                  const array_2 = categories.find((cate) => {
+                    if (cate._id === obj._id) {
+                      arr.push(cate);
+                    }
+                  });
+                });
+                setValue(arr);
+                //
+              }
               setEditRow(result);
-
               handleClickOpen("Edit");
             }
           }}
@@ -360,13 +401,11 @@ export default function MangeUser() {
                   multiple
                   disableCloseOnSelect
                   value={value}
-                  options={[
-                    { id: "10", text: "One" },
-                    { id: "20", text: "Two" },
-                    { id: "30", text: "Three" },
-                  ]}
-                  getOptionLabel={(option) => option.text}
-                  getOptionSelected={(option, value) => value.id === option.id}
+                  options={categories}
+                  getOptionLabel={(option) => option.name}
+                  getOptionSelected={(option, value) =>
+                    value._id === option._id
+                  }
                   style={{ width: 500 }}
                   renderInput={(params) => (
                     <TextField
@@ -384,7 +423,7 @@ export default function MangeUser() {
                         style={{ marginRight: 8 }}
                         checked={selected}
                       />
-                      {option.text}
+                      {option.name}
                     </React.Fragment>
                   )}
                   onChange={(_, selectedOptions) => setValue(selectedOptions)}
@@ -487,9 +526,32 @@ export default function MangeUser() {
                 <label htmlFor="faculty" className="form_update_info-label">
                   Phân quyền:
                 </label>
-                <select className="form_update_info-selection" ref={addAuth}>
-                  <option value="2">Quản lí</option>
+                <select
+                  className="form_update_info-selection"
+                  ref={addAuth}
+                  onClick={(e) => setError("")}
+                >
+                  <option value="0">Chức vụ</option>
                   <option value="1">Quản trị</option>
+                  <option value="2">Quản lí</option>
+                </select>
+              </div>
+              <div className="form_update_info-item">
+                <label htmlFor="faculty" className="form_update_info-label">
+                  Khoa:
+                </label>
+
+                <select
+                  className="form_update_info-selection"
+                  ref={addFac}
+                  onClick={(e) => setError("")}
+                >
+                  <option value="0">Chọn khoa</option>
+                  {faculties.map((fac) => (
+                    <option key={fac._id} value={fac._id}>
+                      {fac.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </form>
