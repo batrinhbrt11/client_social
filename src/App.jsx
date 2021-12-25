@@ -1,7 +1,4 @@
-import Navbar from "./components/Navbar";
 import React, { useContext } from "react";
-import { Grid, makeStyles } from "@material-ui/core";
-import { theme } from "./theme";
 
 import Profile from "./Page/Profile";
 import Login from "./Page/Login";
@@ -17,6 +14,7 @@ function App() {
   const { token, user } = useContext(AuthContext);
 
   return (
+    <>
     <div>
       <BrowserRouter>
         <Routes>
@@ -51,6 +49,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    </>
   );
 }
 
