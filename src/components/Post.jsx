@@ -145,11 +145,19 @@ const useStyles = makeStyles((theme) => ({
   },
   textArea: {
     width: "100%",
+    resize: "none",
+    "&:focus": {
+      outLine: "none",
+    },
   },
   textAreaDisable: {
     width: "100%",
     backgroundColor: "transparent",
     color: "black",
+    resize: "none",
+    "&:focus": {
+      outLine: "none",
+    },
     "&:disabled": {
       backgroundColor: "transparent !important",
       color: "black !important",
@@ -246,6 +254,25 @@ export default function Post({ post, delete_post }) {
   useEffect(() => {
     setIsLiked(status.likes.includes(user._id));
   }, [user._id, status.likes]);
+
+  //comments
+  const [comments, setComments] = useState([]);
+  const fetchComments = async () => {
+    try {
+      const res = await axios.get(`/comments/${post._id}`, {
+        headers: { "x-access-token": token },
+      });
+      const data = res.data;
+      setComments(data);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
+  useEffect(() => {
+    fetchComments();
+  }, [post._id, comments.length]);
+  //end comments
+
   useEffect(() => {
     const ourRequest = axios.CancelToken.source(); //1st step
     const fetchUser = async () => {
@@ -435,7 +462,7 @@ export default function Post({ post, delete_post }) {
               <iframe
                 className={classes.iframeItem}
                 src={status.video}
-                frameborder="0"
+                frameBorder="0"
               ></iframe>
             </div>
           )}
@@ -449,7 +476,7 @@ export default function Post({ post, delete_post }) {
                 <iframe
                   className={classes.iframeItem}
                   src={status.video}
-                  frameborder="0"
+                  frameBorder="0"
                 ></iframe>
               </div>
             </Carousel>
@@ -476,14 +503,35 @@ export default function Post({ post, delete_post }) {
             </div>
           )}
           <div className={classes.postBottomRight}>
-            <Typography variant="body1" className={classes.TextCounter}>
-              {status.comment} bình luận
-            </Typography>
+            {comments.length === 0 ? (
+              <Typography variant="body1" className={classes.TextCounter}>
+                Chưa có bình luận
+              </Typography>
+            ) : (
+              <Typography variant="body1" className={classes.TextCounter}>
+                {comments.length} bình luận
+              </Typography>
+            )}
           </div>
         </div>
         <Divider />
-        <Comment />
-        <InputCmt />
+        {comments.length === 0 ? (
+          <></>
+        ) : (
+          comments.map((cmt) => (
+            <Comment
+              cmt={cmt}
+              deleteComment={(id) =>
+                setComments(comments.filter((post) => post._id !== id))
+              }
+            />
+          ))
+        )}
+
+        <InputCmt
+          idPost={post._id}
+          addCmts={(comment) => setComments([...comments, comment])}
+        />
       </div>
     </Container>
   );

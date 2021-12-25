@@ -4,12 +4,13 @@ import {
   makeStyles,
   TextareaAutosize,
 } from "@material-ui/core";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   cmt_container: {
     paddingTop: "10px",
@@ -61,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: "transparent",
     padding: "5px",
+    resize: "none",
   },
   menuItem: {
     display: "block",
@@ -70,18 +72,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Comment() {
+export default function Comment({ cmt, deleteComment }) {
   const classes = useStyles();
-
   const [readMore, setReadMore] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [anchorEl, setAnchorEl] = useState(null);
   const open_menu = Boolean(anchorEl);
   const [onEdit, setOnEdit] = useState(false);
-  const [content, setContent] = useState(
-    "fcsfsdsdwwdwqdwqLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-  );
+  const [content, setContent] = useState(cmt.content);
+  const desc = useRef();
+  const [userCmt, setUserCmt] = useState({});
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,15 +95,70 @@ export default function Comment() {
 
     setAnchorEl(null);
   };
-
+  useEffect(() => {
+    const ourRequest = axios.CancelToken.source(); //1st step
+    const fetchUser = async () => {
+      const res = await axios.get(
+        `/users/${cmt.userId}`,
+        {
+          headers: { "x-access-token": token },
+        },
+        {
+          cancelToken: ourRequest.token, //2nd step
+        }
+      );
+      setUserCmt(res.data);
+    };
+    fetchUser();
+    return () => {
+      ourRequest.cancel("cancel by user"); //3rd step
+    };
+  }, [cmt.userId]);
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    var config = {
+      method: "delete",
+      url: `/comments/${cmt._id}`,
+      headers: {
+        "x-access-token": token,
+      },
+      data: {
+        userId: user._id,
+      },
+    };
+    await axios(config)
+      .then(function (res) {
+        handleClose();
+        deleteComment(cmt._id);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    try {
+      const newComment = {
+        userId: user._id,
+        content: desc.current.value,
+      };
+      await axios.put(`/comments/${cmt._id}`, newComment, {
+        headers: { "x-access-token": token },
+      });
+      setContent(desc.current.value);
+      setOnEdit(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className={classes.cmt_container}>
       <Link to="/">
         <Avatar
           alt=""
           src={
-            user.profilePicture
-              ? user.profilePicture
+            userCmt.profilePicture
+              ? userCmt.profilePicture
               : PF + "person/noAvartar.jpg"
           }
           className={classes.image}
@@ -115,14 +171,15 @@ export default function Comment() {
             placeholder="Empty"
             defaultValue={content}
             className={classes.textArea}
+            ref={desc}
           />
-          <button type="submit" className={classes.button_cmt}>
+          <button className={classes.button_cmt} onClick={handleEdit}>
             Đăng
           </button>
         </form>
       ) : (
         <div className={classes.cmt_text}>
-          <h6 className={classes.cmt_textName}>Bá Trình</h6>
+          <h6 className={classes.cmt_textName}>{userCmt.name}</h6>
           <span className={classes.cmt_textContent}>
             {content.length < 100
               ? content
@@ -140,34 +197,37 @@ export default function Comment() {
           )}
         </div>
       )}
-
-      <div>
-        <Button
-          id="basic-button"
-          aria-controls="basic-menu"
-          aria-haspopup="true"
-          aria-expanded={open_menu ? "true" : undefined}
-          onClick={handleClick}
-          className={classes.icon_button}
-        >
-          <MoreHorizIcon className={classes.icon} />
-        </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open_menu}
-          onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-          }}
-          className={classes.subMenu}
-        >
-          <MenuItem className={classes.menuItem}>Xóa bình luận</MenuItem>
-          <MenuItem onClick={(e) => Edit_cmt(e)} className={classes.menuItem}>
-            Sửa bình luận
-          </MenuItem>
-        </Menu>
-      </div>
+      {user._id === userCmt._id && (
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls="basic-menu"
+            aria-haspopup="true"
+            aria-expanded={open_menu ? "true" : undefined}
+            onClick={handleClick}
+            className={classes.icon_button}
+          >
+            <MoreHorizIcon className={classes.icon} />
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open_menu}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+            className={classes.subMenu}
+          >
+            <MenuItem className={classes.menuItem} onClick={handleDelete}>
+              Xóa bình luận
+            </MenuItem>
+            <MenuItem onClick={(e) => Edit_cmt(e)} className={classes.menuItem}>
+              Sửa bình luận
+            </MenuItem>
+          </Menu>
+        </div>
+      )}
     </div>
   );
 }

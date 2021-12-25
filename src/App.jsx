@@ -31,10 +31,13 @@ function App() {
             path="/login"
             element={token && user ? <Navigate to="/" /> : <Login />}
           />
-          <Route path="/notification" element={<Notification />} />
+          <Route
+            path="/notification"
+            element={token && user ? <Notification /> : <Login />}
+          />
           <Route
             path="/dashboard"
-            element={token && user ? <Navigate to="/" /> : <Dashboard />}
+            element={token && user ? <Dashboard /> : <Login />}
           />
           <Route
             exact

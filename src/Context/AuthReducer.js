@@ -47,6 +47,7 @@ const AuthReducer = (state, action) => {
           ...state.user,
           name: newUser.name,
           city: newUser.city,
+          faculty: newUser.faculty,
         },
       };
     case "EDIT_AVT": {
