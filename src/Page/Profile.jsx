@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Profile() {
   const classes = useStyles();
   const { token } = useContext(AuthContext);
+
   const [user, setUser] = useState({});
   const id = useParams().id;
 
@@ -59,6 +60,7 @@ export default function Profile() {
     };
     fetchUser();
   }, [id]);
+
   return (
     <>
       <Navbar />

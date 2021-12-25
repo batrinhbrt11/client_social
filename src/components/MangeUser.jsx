@@ -286,7 +286,7 @@ export default function MangeUser() {
     if (!d.faculty) {
       fac = "";
     } else {
-      let facul = faculties.find((f) => f._id === d.faculty);
+      const facul = faculties.find((f) => f._id === d.faculty);
       fac = facul.name;
     }
 
@@ -540,7 +540,6 @@ export default function MangeUser() {
                 <label htmlFor="faculty" className="form_update_info-label">
                   Khoa:
                 </label>
-
                 <select
                   className="form_update_info-selection"
                   ref={addFac}

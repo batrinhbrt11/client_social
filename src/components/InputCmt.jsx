@@ -1,5 +1,6 @@
 import { Avatar, Button, makeStyles } from "@material-ui/core";
-import React, { useState, useContext } from "react";
+import axios from "axios";
+import React, { useState, useContext, useRef } from "react";
 import { AuthContext } from "../Context/AuthContext";
 const useStyles = makeStyles((theme) => ({
   form_cmt: {
@@ -34,11 +35,34 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": { backgroundColor: "#212121" },
   },
 }));
-export default function InputCmt() {
+export default function InputCmt({ idPost, addCmts }) {
   const classes = useStyles();
-  const [content, setContent] = useState("");
-  const { user } = useContext(AuthContext);
+
+  const { user, token } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const desc = useRef();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (desc.current.value === "") {
+      return null;
+    }
+    const newCmt = {
+      userId: user._id,
+      postId: idPost,
+      content: desc.current.value,
+      img: "",
+    };
+    try {
+      await axios.post("/comments/", newCmt, {
+        headers: { "x-access-token": token },
+      });
+      addCmts(newCmt);
+      desc.current.value = "";
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className={classes.inputContainer}>
       <Avatar
@@ -55,11 +79,10 @@ export default function InputCmt() {
         <input
           type="text"
           placeholder="bình luận..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
           className={classes.input_cmt}
+          ref={desc}
         />
-        <Button type="submit" className={classes.button_cmt}>
+        <Button className={classes.button_cmt} onClick={handleSubmit}>
           Đăng
         </Button>
       </form>

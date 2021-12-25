@@ -11,30 +11,30 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { CircularProgress } from "@mui/material";
 export default function ProfileRight({ user, changeUser }) {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [friends, setFriends] = useState([]);
   const { token, user: currentUser, dispatch } = useContext(AuthContext);
-
   const [followed, setFollowed] = useState(
     currentUser.followings.includes(user._id)
   );
   const [loading, setLoading] = useState(false);
   const editName = useRef();
   const editCity = useRef();
+
   //edit info modal
   const [open, setOpen] = useState(false);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const Edit_info = async (e) => {
     e.preventDefault();
     try {
@@ -55,6 +55,7 @@ export default function ProfileRight({ user, changeUser }) {
       const newInfo = {
         name: name_edit,
         city: city_edit,
+        faculty: editFac,
       };
 
       await axios.put(
@@ -75,35 +76,41 @@ export default function ProfileRight({ user, changeUser }) {
       console.log(err);
     }
   };
-
-  //end edit info modal
+  const [faculties, setFaculties] = useState([]);
+  const fetchFaculty = async () => {
+    try {
+      const res = await axios.get("/admin/faculties");
+      const data = res.data;
+      setFaculties(data);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
+  const [userFac, setUserFac] = useState("");
+  const getFacName = async () => {
+    try {
+      const res = await axios.get(`/admin/faculties/${user.faculty}`);
+      const data = res.data;
+      setUserFac(data.name);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
   useEffect(() => {
-    const ourRequest = axios.CancelToken.source(); //1st step
-
+    fetchFaculty();
+    getFacName();
     const getFriends = async () => {
       try {
-        const friendList = await axios.get(
-          "/users/friends/" + user._id,
-          {
-            headers: { "x-access-token": token },
-          },
-          {
-            cancelToken: ourRequest.token, //2nd step
-          }
-        );
+        const friendList = await axios.get("/users/friends/" + user._id, {
+          headers: { "x-access-token": token },
+        });
         setFriends(friendList.data);
       } catch (err) {
         console.log(err);
       }
     };
-    setTimeout(() => {
-      getFriends();
-    }, 3000);
-    return () => {
-      ourRequest.cancel("cancel by user"); //3rd step
-    };
+    getFriends();
   }, [user]);
-
   const handleClick = async () => {
     try {
       if (followed) {
@@ -120,7 +127,12 @@ export default function ProfileRight({ user, changeUser }) {
       setFollowed(!followed);
     } catch (err) {}
   };
+  //get Faculty
 
+  const [editFac, setEditFac] = useState("");
+  const handleChange = (event) => {
+    setEditFac(event.target.value);
+  };
   return (
     <div>
       {user._id !== currentUser._id && (
@@ -162,16 +174,23 @@ export default function ProfileRight({ user, changeUser }) {
                   />
                 </div>
                 <div className="form_update_info-item">
-                  <label htmlFor="faculty" className="form_update_info-label">
-                    Khoa:
-                  </label>
-                  <select className="form_update_info-input">
-                    <option value="0">Chọn khoa:</option>
-                    <option value="1">CNTT</option>
-                    <option value="2">DIen</option>
-                    <option value="2">abd</option>
-                  </select>
+                  <InputLabel id="demo-simple-select-label">Khoa</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={editFac}
+                    label="Age"
+                    onChange={handleChange}
+                    className="form_update_info-input"
+                  >
+                    {faculties.map((fac) => (
+                      <MenuItem key={fac._id} value={fac._id}>
+                        {fac.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
+
                 <div className="form_update_info-item">
                   <label htmlFor="city" className="form_update_info-label">
                     Thành phố:
@@ -201,7 +220,7 @@ export default function ProfileRight({ user, changeUser }) {
         <div className="rightbarInfo">
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Khoa:</span>
-            <span className="rightbarInfoValue">{user.faculty}</span>
+            <span className="rightbarInfoValue">{userFac}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Chức vụ:</span>
