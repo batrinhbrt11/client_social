@@ -5,7 +5,7 @@ import { AuthContext } from "../Context/AuthContext";
 import { CircularProgress } from "@mui/material";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
-export default function Login() {
+export default function Login({setupSocket}) {
   const username = useRef();
   const password = useRef();
   const { user, isFetching, error, dispatch } = useContext(AuthContext);
@@ -19,7 +19,7 @@ export default function Login() {
     loginCall(
       { username: username.current.value, password: password.current.value },
       dispatch
-    );
+    ).then(setupSocket());
   };
   const responseGoogle = async (response) => {
     if (

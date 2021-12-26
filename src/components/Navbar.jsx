@@ -13,14 +13,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import React, { useContext, useState, useRef, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import MessageIcon from "@mui/icons-material/Message";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Cancel } from "@material-ui/icons";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Drawer from "./Drawer";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -29,9 +26,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import "../css/ProfileRight.css";
-import {io} from "socket.io-client"
-import Snackbar from '@mui/material/Snackbar';
-import Slide from '@mui/material/Slide';
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
@@ -188,40 +182,9 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
-
-  // const [notification, setNotification] = useState('')
-  // const [socket, setSocket] = useState(null);
-  // const transition = <Slide  direction="up" />;
-  // const [openSnackBar, setOpenSnackBar] = useState(false);
-  
-
-  // const handleCloseSnackBar = () =>{
-  //   setOpenSnackBar(false)
-  // } 
-  // useEffect(() => {
-  //   setSocket(io('http://localhost:5000'))
-  // },[])
-  
-  // useEffect(() => {
-  //   socket.on("notification", (data) => {
-  //     setNotification(data);
-  //   })
-  // })
-  // useEffect(() => {
-  //   setOpenSnackBar(true);
-  // },[notification])
-
   
   return (
     <>
-     {/* <Snackbar
-        open={openSnackBar}
-        onClose={handleCloseSnackBar}
-        TransitionComponent={transition}
-        message={notification}
-        key={transition ? transition.name : ''}
-      /> */}
-
     <AppBar position="fixed">
       <Toolbar className={classes.toolbar}>
         <Link to="/" className={classes.logoLg}>

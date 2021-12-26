@@ -17,11 +17,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import axios from "axios";
 import { forEach } from 'draft-js/lib/DefaultDraftBlockRenderMap';
 import NativeSelect from '@mui/material/NativeSelect';
-export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, token, setAlert, setAlertContent, setAlertType}){
+export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, notifications, token, setAlert, setAlertContent, setAlertType}){
     const [categories, setCategories] = useState([]);
     const [title, setTitle] = useState(`${notification.title}`);
     const [content, setContent] = useState('');
-    const [categoryId, setCategoryId] = useState('');
+    const [categoryId, setCategoryId] = useState(`${notification.categoryId}`);
     const formControl = {
         width: '100%',
         marginBottom: '20px'
@@ -47,6 +47,12 @@ export default function EditNotificationForm({openEdit, handleCloseEdit, Transit
             else if(res.data.code === 1){
                 setAlertType("success");
             }
+            let updateNoti = await notifications.find(e => e._id === notification._id)
+            let cate= categories.find(c => c._id === categoryId);
+            updateNoti.title = title;
+            updateNoti.content = content;
+            updateNoti.categoryId = categoryId
+            updateNoti.category[0].name = cate.name;
             handleCloseEdit();
              setTimeout(() => {
                 setAlert(false);
@@ -93,7 +99,7 @@ export default function EditNotificationForm({openEdit, handleCloseEdit, Transit
                 <FormControl style={formControl} >
                     <InputLabel variant="standard" htmlFor="uncontrolled-native">Chuyên mục</InputLabel>
                     <NativeSelect
-                        defaultValue={categoryId}
+                        defaultValue={notification.categoryId}
                         inputProps={{
                         name: 'Chuyên mục',
                         id: 'uncontrolled-native',

@@ -93,9 +93,8 @@ export default function NotificationTable() {
   }, []);
 
   useEffect(() => {
-    let searchedNotifications = notifications.filter((noti) =>
-      noti.title.includes(search)
-    );
+    let query = search.toLowerCase();
+    let searchedNotifications = notifications.filter(noti => noti.title.indexOf(query) >= 0 );
     setNotifications(searchedNotifications);
   }, [search]);
   return (
@@ -184,6 +183,7 @@ export default function NotificationTable() {
         handleCloseEdit={handleCloseEdit}
         Transition={Transition}
         notification={notification}
+        notifications = {notifications}
         token={token}
         setAlert={setAlert}
         setAlertContent={setAlertContent}
