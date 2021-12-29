@@ -119,13 +119,6 @@ export default function MangeUser() {
       width: 300,
       flex: 1,
     },
-    {
-      field: "faculty",
-      headerName: "Khoa",
-      sortable: false,
-      width: 300,
-      flex: 1,
-    },
   ];
   const handleEditRow = async (e) => {
     e.preventDefault();
@@ -200,11 +193,6 @@ export default function MangeUser() {
         setError("Độ dài mật khẩu phải lớn hơn 6 ");
       } else if (addAuth.current.value === "0") {
         setError("Chọn chức vụ ");
-      } else if (
-        addAuth.current.value === "2" &&
-        addFac.current.value === "0"
-      ) {
-        setError("Chọn khoa");
       } else {
         const newUser = {
           name: addName.current.value,
@@ -212,7 +200,6 @@ export default function MangeUser() {
           email: addEmail.current.value,
           password: addPassword.current.value,
           authorize: addAuth.current.value,
-          faculty: addFac.current.value,
         };
         await axios.post("/users", newUser, {
           headers: { "x-access-token": token },
@@ -242,17 +229,6 @@ export default function MangeUser() {
     }
   };
 
-  //get Faculty
-  const [faculties, setFaculties] = useState([]);
-  const fetchFaculty = async () => {
-    try {
-      const res = await axios.get("/admin/faculties");
-      const data = res.data;
-      setFaculties(data);
-    } catch (err) {
-      console.log("Requet cancel", err.message);
-    }
-  };
   const [categories, setCategories] = useState([]);
   const fetchCate = async () => {
     try {
@@ -266,7 +242,7 @@ export default function MangeUser() {
   //call api
   useEffect(() => {
     fetchCate();
-    fetchFaculty();
+
     fetchUser();
   }, []);
 
@@ -281,14 +257,6 @@ export default function MangeUser() {
     } else if (d.authorize === 1) {
       author = "Quản trị";
     }
-    let fac = "";
-
-    if (!d.faculty) {
-      fac = "";
-    } else {
-      const facul = faculties.find((f) => f._id === d.faculty);
-      fac = facul.name;
-    }
 
     return {
       key: d._id,
@@ -296,7 +264,7 @@ export default function MangeUser() {
       name: d.name,
       username: d.username,
       authorize: author,
-      faculty: fac,
+
       categories: d.categories,
     };
   });
@@ -323,7 +291,7 @@ export default function MangeUser() {
           className={classes.add_btn}
           onClick={(e) => handleClickOpen("Add")}
         >
-          Thêm người dùng
+          Thêm Phòng/Khoa
         </Button>
         <Button
           startIcon={<DeleteIcon />}
@@ -534,23 +502,6 @@ export default function MangeUser() {
                   <option value="0">Chức vụ</option>
                   <option value="1">Quản trị</option>
                   <option value="2">Quản lí</option>
-                </select>
-              </div>
-              <div className="form_update_info-item">
-                <label htmlFor="faculty" className="form_update_info-label">
-                  Khoa:
-                </label>
-                <select
-                  className="form_update_info-selection"
-                  ref={addFac}
-                  onClick={(e) => setError("")}
-                >
-                  <option value="0">Chọn khoa</option>
-                  {faculties.map((fac) => (
-                    <option key={fac._id} value={fac._id}>
-                      {fac.name}
-                    </option>
-                  ))}
                 </select>
               </div>
             </form>

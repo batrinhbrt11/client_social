@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     width: "100%",
     resize: "none",
+    color: "black",
     "&:focus": {
       outLine: "none",
     },

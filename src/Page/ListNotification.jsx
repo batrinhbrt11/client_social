@@ -8,6 +8,8 @@ import Feed from "../components/Feed";
 import Rightbar from "../components/Rightbar";
 import Navbar from "../components/Navbar";
 import CateNoti from "../components/CateNotis/CateNoti";
+import ListNotis from "../components/ListNotis/ListNotis";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   right: {
     [theme.breakpoints.between("xs", "sm")]: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(10),
   },
 }));
-export default function Notification() {
+export default function ListNotification() {
   const classes = useStyles();
   return (
     <>
@@ -27,11 +29,8 @@ export default function Notification() {
         <Grid item md={2} className={classes.right}>
           <Leftbar />
         </Grid>
-        <Grid item sm={12} md={7} xs={12} className={classes.contentpad}>
-          <CateNoti />
-        </Grid>
-        <Grid item md={3} className={classes.right}>
-          <Rightbar />
+        <Grid item sm={12} md={10} xs={12} className={classes.contentpad}>
+          <ListNotis />
         </Grid>
       </Grid>
     </>

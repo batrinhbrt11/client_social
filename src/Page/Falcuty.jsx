@@ -25,7 +25,7 @@ export default function Falcuty() {
         <div>
           <Navbar />
           <Grid container>
-            <ErrorPage />
+            <ErrorPage string={"Trang này không tồn tại"} />
           </Grid>
         </div>
       ) : (

@@ -10,7 +10,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import MangeUser from "../components/MangeUser";
-import ManageFaculty from "../components/ManageFaculty";
+
 import ManageCate from "../components/ManageCate";
 const useStyles = makeStyles((theme) => ({
   right: {
@@ -37,7 +37,7 @@ export default function Dashboard() {
         <div>
           <Navbar />
           <Grid container>
-            <ErrorPage />
+            <ErrorPage string={"Trang này không tồn tại"} />
           </Grid>
         </div>
       ) : (
@@ -56,17 +56,15 @@ export default function Dashboard() {
                       aria-label="lab API tabs example"
                     >
                       <Tab label="Người dùng" value="1" />
-                      <Tab label="Khoa" value="2" />
-                      <Tab label="Danh mục" value="3" />
+
+                      <Tab label="Danh mục" value="2" />
                     </TabList>
                   </Box>
                   <TabPanel value="1">
                     <MangeUser />
                   </TabPanel>
+
                   <TabPanel value="2">
-                    <ManageFaculty />
-                  </TabPanel>
-                  <TabPanel value="3">
                     <ManageCate />
                   </TabPanel>
                 </TabContext>

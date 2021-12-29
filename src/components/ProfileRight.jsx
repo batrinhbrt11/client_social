@@ -90,7 +90,7 @@ export default function ProfileRight({ user, changeUser }) {
     try {
       const res = await axios.get(`/admin/faculties/${user.faculty}`);
       const data = res.data;
-      setUserFac(data.name);
+      setUserFac(data);
     } catch (err) {
       console.log("Requet cancel", err.message);
     }
@@ -140,102 +140,109 @@ export default function ProfileRight({ user, changeUser }) {
           {followed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
         </button>
       )}
-      <div className="rightbarInfoContainer">
-        <h4 className="rightbarTitle">
-          Thông tin
-          {user._id === currentUser._id ? (
-            <CreateIcon className="rightbarIcon" onClick={handleClickOpen} />
-          ) : (
-            <></>
-          )}
-        </h4>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle className="form_update_header">
-            Sửa thông tin
-          </DialogTitle>
+      {currentUser.authorize !== "2" ||
+        (user.authorize !== "2" && (
+          <div className="rightbarInfoContainer">
+            <h4 className="rightbarTitle">
+              Thông tin
+              {user._id === currentUser._id ? (
+                <CreateIcon
+                  className="rightbarIcon"
+                  onClick={handleClickOpen}
+                />
+              ) : (
+                <></>
+              )}
+            </h4>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle className="form_update_header">
+                Sửa thông tin
+              </DialogTitle>
 
-          {loading ? (
-            <DialogContent className="loadingProgress">
-              <CircularProgress color="inherit" />
-            </DialogContent>
-          ) : (
-            <DialogContent>
-              <form className="form_update_info">
-                <div className="form_update_info-item">
-                  <label htmlFor="fname" className="form_update_info-label">
-                    Tên hiển thị:
-                  </label>
-                  <input
-                    aria-label=""
-                    className="form_update_info-input"
-                    defaultValue={currentUser.name}
-                    ref={editName}
-                  />
-                </div>
-                <div className="form_update_info-item">
-                  <InputLabel id="demo-simple-select-label">Khoa</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={editFac}
-                    label="Age"
-                    onChange={handleChange}
-                    className="form_update_info-input"
-                  >
-                    {faculties.map((fac) => (
-                      <MenuItem key={fac._id} value={fac._id}>
-                        {fac.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </div>
+              {loading ? (
+                <DialogContent className="loadingProgress">
+                  <CircularProgress color="inherit" />
+                </DialogContent>
+              ) : (
+                <DialogContent>
+                  <form className="form_update_info">
+                    <div className="form_update_info-item">
+                      <label htmlFor="fname" className="form_update_info-label">
+                        Tên hiển thị:
+                      </label>
+                      <input
+                        aria-label=""
+                        className="form_update_info-input"
+                        defaultValue={currentUser.name}
+                        ref={editName}
+                      />
+                    </div>
 
-                <div className="form_update_info-item">
-                  <label htmlFor="city" className="form_update_info-label">
-                    Thành phố:
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    className="form_update_info-input"
-                    defaultValue={currentUser.city}
-                    ref={editCity}
-                  />
-                </div>
-              </form>
-            </DialogContent>
-          )}
+                    <div className="form_update_info-item">
+                      <label
+                        className="form_update_info-label"
+                        id="demo-simple-select-label"
+                      >
+                        Khoa:
+                      </label>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={editFac}
+                        label="Khoa"
+                        onChange={handleChange}
+                        className="form_update_info-input"
+                      >
+                        {faculties.map((fac) => (
+                          <MenuItem key={fac._id} value={fac._id}>
+                            {fac.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
 
-          <DialogActions>
-            <Button onClick={handleClose} className="button_cancel">
-              Hủy
-            </Button>
-            <Button onClick={(e) => Edit_info(e)} className="button_edit">
-              Đồng ý
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <div className="rightbarInfo">
-          <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">Khoa:</span>
-            <span className="rightbarInfoValue">{userFac}</span>
+                    <div className="form_update_info-item">
+                      <label htmlFor="city" className="form_update_info-label">
+                        Thành phố:
+                      </label>
+                      <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        className="form_update_info-input"
+                        defaultValue={currentUser.city}
+                        ref={editCity}
+                      />
+                    </div>
+                  </form>
+                </DialogContent>
+              )}
+
+              <DialogActions>
+                <Button onClick={handleClose} className="button_cancel">
+                  Hủy
+                </Button>
+                <Button onClick={(e) => Edit_info(e)} className="button_edit">
+                  Đồng ý
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <div className="rightbarInfo">
+              <div className="rightbarInfoItem">
+                <span className="rightbarInfoKey">Khoa:</span>
+                <span className="rightbarInfoValue">{userFac}</span>
+              </div>
+
+              <div className="rightbarInfoItem">
+                <span className="rightbarInfoKey">Thành phố:</span>
+                <span className="rightbarInfoValue">{user.city}</span>
+              </div>
+            </div>
           </div>
-          <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">Chức vụ:</span>
-            <span className="rightbarInfoValue">
-              {user.authorize === 3 ? "Sinh viên" : "Quản lí"}
-            </span>
-          </div>
-          <div className="rightbarInfoItem">
-            <span className="rightbarInfoKey">Thành phố:</span>
-            <span className="rightbarInfoValue">{user.city}</span>
-          </div>
-        </div>
-      </div>
+        ))}
 
       <div className="rightbarFollowingsContainer">
-        <h4 className="rightbarTitle">Bạn bè</h4>
+        <h4 className="rightbarTitle">Quan tâm</h4>
         <div className="rightbarFollowings">
           {friends.map((friend) => (
             <Link key={friend._id} to={"/profile/" + friend._id}>

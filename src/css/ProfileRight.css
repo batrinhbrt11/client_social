@@ -110,8 +110,8 @@
     margin-top: 10px;
 }
 .form_update_info-label {
-    font-weight: 600;
-    margin-bottom: 10px;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
 }
 .form_update_info-input {
     font-size: 1.25rem;
@@ -144,7 +144,8 @@
 .form_update_header {
     font-size: 1.5rem !important;
     font-weight: 700 !important;
-    border-bottom: 1px solid black;
+    background-color: #87cefa;
+    color: white;
     margin-bottom: 20px !important  ;
 }
 .success {

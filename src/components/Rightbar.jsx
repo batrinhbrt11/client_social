@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 import React from "react";
 import { Container, makeStyles, Typography } from "@material-ui/core";
+=======
+import React, { useContext, useEffect, useState } from "react";
+import { Avatar, Container, makeStyles, Typography } from "@material-ui/core";
+>>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
 import "../css/Rightbar.css";
-
+import axios from "axios";
+import { AuthContext } from "../Context/AuthContext";
+import parse from "html-react-parser";
+import ItemNoti from "./ItemNoti";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(10),
@@ -26,18 +35,18 @@ const useStyles = makeStyles((theme) => ({
     padding: "0",
     margin: "0",
     position: "sticky",
-    height: "50vh",
+    maxHeight: "50vh",
     top: "0",
     overflowY: "scroll",
     listStyle: "none",
   },
   rightBarNoti: {
     "&:nth-child(odd)": {
-      borderLeft: "10px solid #99dfff",
+      borderLeft: "5px solid #99dfff",
       backgroundColor: "#e1f5fe",
     },
     "&:nth-child(even)": {
-      borderLeft: "10px solid #9e9e9e",
+      borderLeft: "5px solid #9e9e9e",
       backgroundColor: "#eeeeee",
     },
   },
@@ -51,99 +60,36 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Rightbar() {
   const classes = useStyles();
+  const { token } = useContext(AuthContext);
+  const [newNotification, setNewNotification] = useState([]);
+  const fetchNotification = async () => {
+    try {
+      const res = await axios.get("/notifications/?page=10", {
+        headers: { Authorization: "Bearer " + token },
+      });
+      const data = res.data;
+      setNewNotification(data);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotification();
+  }, []);
+
   return (
     <Container className={classes.container}>
       <div className={classes.rightBarWrapper}>
         <Typography variant="h6">Thông báo</Typography>
         <ul className={classes.rightbarList}>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
-          <li className={classes.rightBarNoti}>
-            <div className={classes.rightBarNotiInfo}>
-              <Typography variant="body1" className={classes.textTitle}>
-                Bạn bè sdsd sadsd sdsad
-              </Typography>
-              <Typography variant="body1" className="textContent">
-                Bạn bè Bạn bè sdsd sadsd sdsad Bạn bè sdsd sadsd sdsadBạn bè
-                sdsd sadsd sdsad
-              </Typography>
-            </div>
-          </li>
+          {newNotification.map((noti) => (
+            <li key={noti._id} className={classes.rightBarNoti}>
+              <Link to={`/notification/noti/${noti._id}`}>
+                <ItemNoti key={noti._id} noti={noti} />
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </Container>
