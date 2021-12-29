@@ -6,8 +6,7 @@ import Leftbar from "../components/Leftbar";
 import Feed from "../components/Feed";
 import Rightbar from "../components/Rightbar";
 import Navbar from "../components/Navbar";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+
 
 const useStyles = makeStyles((theme) => ({
   right: {
@@ -19,23 +18,13 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(10),
   },
 }));
-export default function Home({socket}) {
+export default function Home() {
   const classes = useStyles();
   const [message, setMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
-  useEffect(() => {
-    if(socket){
-      socket.on("newNotification", (msg) => {
-        setMessage(msg);
-        console.log(msg);
-        setOpen(true);
-      })
-    }
-  })
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+  
+  
   return (
     <>
       <Navbar />
@@ -50,15 +39,7 @@ export default function Home({socket}) {
           <Rightbar />
         </Grid>
       </Grid>
-      <Snackbar open={open} autoHideDuration={6000} onClose={() => {setOpen(false)}}>
-      <a href={message.url}><Alert onClose={() => {setOpen(false)}} severity="success" sx={{ width: '100%' }}>
-          {message.falcutyName} vừa đăng thông báo "{message.title}"
-        </Alert></a>
-      </Snackbar>
-      {message ? 
-      (<a href={message.url}><Alert severity="success">
-        {message.falcutyName} vừa đăng thông báo "{message.title}"
-        </Alert></a>) : (<></>)}
+      
     </>
   );
 }

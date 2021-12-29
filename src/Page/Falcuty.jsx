@@ -1,6 +1,5 @@
 import NotificationTable from "../components/NotificationTable";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
 import React, { useContext } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 import Leftbar from "../components/Leftbar";
@@ -20,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Falcuty() {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <div>
       {user.authorize !== 2 ? (

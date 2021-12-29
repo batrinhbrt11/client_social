@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -17,7 +16,6 @@ import DoneIcon from "@mui/icons-material/Done";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { Grid, makeStyles } from "@material-ui/core";
 import Leftbar from "../components/Leftbar";
@@ -62,7 +60,7 @@ export default function AddNotification({socket}) {
       categoryId.length === 0
     ) {
       setErrorMsg(
-        "Tiêu đề hoặc nội dung quá ngắn vui lòng nhập đầy đủ thông tin"
+        "Tiêu đề hoặc nội dung quá ngắn, vui lòng nhập đầy đủ thông tin"
       );
       setErrAlert(true);
     } else {
@@ -82,7 +80,7 @@ export default function AddNotification({socket}) {
         }, 2000);
         socket.emit("postNoification", {
           message: res.data.message
-        })
+        }) 
       } else {
         setErrAlert(true);
         setErrorMsg(res.data.message);

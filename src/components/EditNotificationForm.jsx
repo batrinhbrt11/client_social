@@ -1,21 +1,15 @@
 import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import React, {useState, useEffect, useContext} from "react";
-import {useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from "axios";
-import { forEach } from 'draft-js/lib/DefaultDraftBlockRenderMap';
 import NativeSelect from '@mui/material/NativeSelect';
 export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, notifications, token, setAlert, setAlertContent, setAlertType}){
     const [categories, setCategories] = useState([]);

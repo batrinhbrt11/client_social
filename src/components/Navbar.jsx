@@ -26,6 +26,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import "../css/ProfileRight.css";
+import io from "socket.io-client"
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
@@ -121,6 +124,43 @@ export default function Navbar() {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  //Socket thông báo 
+  const [socket, setSocket] = useState(null);
+  const [message, setMessage] = React.useState("");
+  const [openNotifiAlert, setOpenNotifiAlert] = React.useState(false);
+  const setupSocket = () => {
+    if(!socket && token && user){
+      const newSocket = io("http://localhost:5000", {
+        query: { token }, transports : ['websocket']
+      })
+      newSocket.on("connect", () => {
+        console.log("Connected");
+      })
+      newSocket.on("disconect", () => {
+        setSocket(null);
+      })
+      setSocket(newSocket);
+    }
+  }
+  useEffect(() => {
+    setupSocket()
+  },[])
+
+  useEffect(() => {
+    if(socket){
+      socket.on("newNotification", (msg) => {
+        setMessage(msg);
+        console.log(msg);
+        setOpen(true);
+      })
+    }
+  });
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  // Đăng nhập
   const open_menu = Boolean(anchorEl);
   const password = useRef();
   const reNewPassword = useRef();
@@ -317,6 +357,15 @@ export default function Navbar() {
         </Dialog>
       </Toolbar>
     </AppBar>
+    <Snackbar open={openNotifiAlert} autoHideDuration={6000} onClose={() => {setOpenNotifiAlert(false)}}>
+      <a href={message.url}><Alert onClose={() => {setOpenNotifiAlert(false)}} severity="success" sx={{ width: '100%' }}>
+          {message.falcutyName} vừa đăng thông báo "{message.title}"
+        </Alert></a>
+      </Snackbar>
+      {message ? 
+      (<a href={message.url}><Alert severity="success">
+        {message.falcutyName} vừa đăng thông báo "{message.title}"
+        </Alert></a>) : (<></>)}
     </>
   );
 }

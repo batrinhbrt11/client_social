@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Container, makeStyles, Typography } from "@material-ui/core";
+import { Container, makeStyles, Typography } from "@material-ui/core";
 import "../css/Rightbar.css";
 
 const useStyles = makeStyles((theme) => ({
