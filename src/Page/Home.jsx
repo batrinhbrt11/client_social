@@ -6,12 +6,8 @@ import Leftbar from "../components/Leftbar";
 import Feed from "../components/Feed";
 import Rightbar from "../components/Rightbar";
 import Navbar from "../components/Navbar";
-<<<<<<< HEAD
-
-=======
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
 
 const useStyles = makeStyles((theme) => ({
   right: {
@@ -23,19 +19,11 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(10),
   },
 }));
-<<<<<<< HEAD
-export default function Home() {
-=======
 export default function Home({ socket }) {
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
   const classes = useStyles();
   const [message, setMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
-<<<<<<< HEAD
-  
-  
-=======
   useEffect(() => {
     if (socket) {
       socket.on("newNotification", (msg) => {
@@ -48,7 +36,6 @@ export default function Home({ socket }) {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
   return (
     <>
       <Navbar />
@@ -63,9 +50,6 @@ export default function Home({ socket }) {
           <Rightbar />
         </Grid>
       </Grid>
-<<<<<<< HEAD
-      
-=======
       <Snackbar
         open={open}
         autoHideDuration={6000}
@@ -94,7 +78,6 @@ export default function Home({ socket }) {
       ) : (
         <></>
       )}
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
     </>
   );
 }

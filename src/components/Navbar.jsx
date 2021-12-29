@@ -309,34 +309,6 @@ export default function Navbar() {
                   <span className="success_sub">Vui lòng đăng nhập lại</span>
                   <CircularProgress color="inherit" className="icon_loading" />
                 </div>
-<<<<<<< HEAD
-              </form>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClosePass} className={classes.btn_cancel}>
-              Hủy
-            </Button>
-            <Button
-              onClick={(e) => updatePassword(e)}
-              className={classes.btn_edit}
-            >
-              Đồng ý
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Toolbar>
-    </AppBar>
-    <Snackbar open={openNotifiAlert} autoHideDuration={6000} onClose={() => {setOpenNotifiAlert(false)}}>
-      <a href={message.url}><Alert onClose={() => {setOpenNotifiAlert(false)}} severity="success" sx={{ width: '100%' }}>
-          {message.falcutyName} vừa đăng thông báo "{message.title}"
-        </Alert></a>
-      </Snackbar>
-      {message ? 
-      (<a href={message.url}><Alert severity="success">
-        {message.falcutyName} vừa đăng thông báo "{message.title}"
-        </Alert></a>) : (<></>)}
-=======
               ) : (
                 <form className="form_update_info">
                   <div className="form_update_info-item">
@@ -392,7 +364,15 @@ export default function Navbar() {
           </Dialog>
         </Toolbar>
       </AppBar>
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
+      <Snackbar open={openNotifiAlert} autoHideDuration={6000} onClose={() => {setOpenNotifiAlert(false)}}>
+      <a href={message.url}><Alert onClose={() => {setOpenNotifiAlert(false)}} severity="success" sx={{ width: '100%' }}>
+          {message.falcutyName} vừa đăng thông báo "{message.title}"
+        </Alert></a>
+      </Snackbar>
+      {message ? 
+      (<a href={message.url}><Alert severity="success">
+        {message.falcutyName} vừa đăng thông báo "{message.title}"
+        </Alert></a>) : (<></>)}
     </>
   );
 }

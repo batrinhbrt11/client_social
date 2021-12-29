@@ -79,13 +79,8 @@ export default function AddNotification({ socket }) {
           navigate("/falcuty");
         }, 2000);
         socket.emit("postNoification", {
-<<<<<<< HEAD
           message: res.data.message
         }) 
-=======
-          message: res.data.message,
-        });
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
       } else {
         setErrAlert(true);
         setErrorMsg(res.data.message);
