@@ -13,10 +13,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import React, { useContext, useState, useRef, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { Cancel } from "@material-ui/icons";
+import { Cancel, NightsStay } from "@material-ui/icons";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Drawer from "./Drawer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -181,142 +181,149 @@ export default function Navbar() {
     window.location.reload();
     setAnchorEl(null);
   };
+  const params = useParams();
+  const handleTop = () => {
+    if (window.location.pathname === "/") {
+      window.scrollTo(0, 0);
+    }
+  };
 
-  
   return (
     <>
-    <AppBar position="fixed">
-      <Toolbar className={classes.toolbar}>
-        <Link to="/" className={classes.logoLg}>
-          <Typography variant="h6">META</Typography>
-        </Link>
-        <div className={classes.logoSm}>
-          <Drawer />
-          <Link to="/">
-            <Typography variant="h6" className={classes.logoSm_Text}>
+      <AppBar position="fixed">
+        <Toolbar className={classes.toolbar}>
+          <Link to="/" className={classes.logoLg}>
+            <Typography variant="h6" onClick={handleTop}>
               META
             </Typography>
           </Link>
-        </div>
-
-        <div className={classes.search}>
-          <SearchIcon />
-          <InputBase placeholder="Tìm kiếm...." className={classes.input} />
-          <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
-        </div>
-        <div className={classes.icons}>
-          <SearchIcon
-            className={classes.searchButton}
-            onClick={() => setOpen(true)}
-          />
-
-          <Link to={`/profile/${user._id}`}>
-            <Avatar
-              alt=""
-              src={
-                user.profilePicture
-                  ? user.profilePicture
-                  : PF + "person/noAvartar.jpg"
-              }
-              className={classes.image}
-            />
-          </Link>
-          <div>
-            <Button
-              id="basic-button"
-              aria-controls="basic-menu"
-              aria-haspopup="true"
-              aria-expanded={open_menu ? "true" : undefined}
-              onClick={handleClick}
-            >
-              <ArrowDropDownCircleIcon className={classes.icon} />
-            </Button>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open_menu}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-              className={classes.subMenu}
-            >
-              <MenuItem onClick={handleOpenPass} className={classes.menuItem}>
-                Đổi mật khẩu
-              </MenuItem>
-              <MenuItem onClick={Logout} className={classes.menuItem}>
-                Đăng xuất
-              </MenuItem>
-            </Menu>
+          <div className={classes.logoSm}>
+            <Drawer />
+            <Link to="/">
+              <Typography variant="h6" className={classes.logoSm_Text}>
+                META
+              </Typography>
+            </Link>
           </div>
-        </div>
 
-        <Dialog open={openPass} onClose={handleClosePass}>
-          <DialogTitle>Đổi mật khẩu</DialogTitle>
+          <div className={classes.search}>
+            <SearchIcon />
+            <InputBase placeholder="Tìm kiếm...." className={classes.input} />
+            <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
+          </div>
+          <div className={classes.icons}>
+            <SearchIcon
+              className={classes.searchButton}
+              onClick={() => setOpen(true)}
+            />
 
-          <DialogContent>
-            {error ? <span className="error">{error}</span> : <span></span>}
-            {success ? (
-              <div className="success_container">
-                <span className="success">Đổi mật khẩu thành công</span>
-                <span className="success_sub">Vui lòng đăng nhập lại</span>
-                <CircularProgress color="inherit" className="icon_loading" />
-              </div>
-            ) : (
-              <form className="form_update_info">
-                <div className="form_update_info-item">
-                  <label htmlFor="fname" className="form_update_info-label">
-                    Mật khẩu:
-                  </label>
-                  <input
-                    aria-label=""
-                    className="form_update_info-input"
-                    type="password"
-                    ref={password}
-                    onClick={(e) => setError("")}
-                  />
+            <Link to={`/profile/${user._id}`}>
+              <Avatar
+                alt=""
+                src={
+                  user.profilePicture
+                    ? user.profilePicture
+                    : PF + "person/noAvartar.jpg"
+                }
+                className={classes.image}
+              />
+            </Link>
+            <div>
+              <Button
+                id="basic-button"
+                aria-controls="basic-menu"
+                aria-haspopup="true"
+                aria-expanded={open_menu ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <ArrowDropDownCircleIcon className={classes.icon} />
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open_menu}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+                className={classes.subMenu}
+              >
+                <MenuItem onClick={handleOpenPass} className={classes.menuItem}>
+                  Đổi mật khẩu
+                </MenuItem>
+                <MenuItem onClick={Logout} className={classes.menuItem}>
+                  Đăng xuất
+                </MenuItem>
+              </Menu>
+            </div>
+          </div>
+
+          <Dialog open={openPass} onClose={handleClosePass}>
+            <DialogTitle>Đổi mật khẩu</DialogTitle>
+
+            <DialogContent>
+              {error ? <span className="error">{error}</span> : <span></span>}
+              {success ? (
+                <div className="success_container">
+                  <span className="success">Đổi mật khẩu thành công</span>
+                  <span className="success_sub">Vui lòng đăng nhập lại</span>
+                  <CircularProgress color="inherit" className="icon_loading" />
                 </div>
-                <div className="form_update_info-item">
-                  <label htmlFor="fname" className="form_update_info-label">
-                    Mật khẩu mới:
-                  </label>
-                  <input
-                    aria-label=""
-                    type="password"
-                    className="form_update_info-input"
-                    ref={newPassword}
-                    onClick={(e) => setError("")}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="fname" className="form_update_info-label">
-                    Nhập lại mật khẩu mới:
-                  </label>
-                  <input
-                    aria-label=""
-                    className="form_update_info-input"
-                    type="password"
-                    ref={reNewPassword}
-                    onClick={(e) => setError("")}
-                  />
-                </div>
-              </form>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClosePass} className={classes.btn_cancel}>
-              Hủy
-            </Button>
-            <Button
-              onClick={(e) => updatePassword(e)}
-              className={classes.btn_edit}
-            >
-              Đồng ý
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Toolbar>
-    </AppBar>
+              ) : (
+                <form className="form_update_info">
+                  <div className="form_update_info-item">
+                    <label htmlFor="fname" className="form_update_info-label">
+                      Mật khẩu:
+                    </label>
+                    <input
+                      aria-label=""
+                      className="form_update_info-input"
+                      type="password"
+                      ref={password}
+                      onClick={(e) => setError("")}
+                    />
+                  </div>
+                  <div className="form_update_info-item">
+                    <label htmlFor="fname" className="form_update_info-label">
+                      Mật khẩu mới:
+                    </label>
+                    <input
+                      aria-label=""
+                      type="password"
+                      className="form_update_info-input"
+                      ref={newPassword}
+                      onClick={(e) => setError("")}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="fname" className="form_update_info-label">
+                      Nhập lại mật khẩu mới:
+                    </label>
+                    <input
+                      aria-label=""
+                      className="form_update_info-input"
+                      type="password"
+                      ref={reNewPassword}
+                      onClick={(e) => setError("")}
+                    />
+                  </div>
+                </form>
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClosePass} className={classes.btn_cancel}>
+                Hủy
+              </Button>
+              <Button
+                onClick={(e) => updatePassword(e)}
+                className={classes.btn_edit}
+              >
+                Đồng ý
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Toolbar>
+      </AppBar>
     </>
   );
 }

@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px",
     borderRadius: "16px",
     display: "flex",
+    color: "black",
   },
   inputContainer: {
     margin: "10px 0",

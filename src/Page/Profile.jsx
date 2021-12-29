@@ -8,6 +8,8 @@ import Leftbar from "../components/Leftbar";
 import { useParams } from "react-router";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../Context/AuthContext";
+import { SettingsRemoteOutlined } from "@material-ui/icons";
+import ErrorPage from "../components/ErrorPage";
 const useStyles = makeStyles((theme) => ({
   profileContainer: {
     display: "grid",
@@ -50,17 +52,27 @@ export default function Profile() {
 
   const [user, setUser] = useState({});
   const id = useParams().id;
-
+  const [error, setError] = useState(false);
   useEffect(() => {
-    const fetchUser = async () => {
-      const res = await axios.get(`/users/${id}`, {
-        headers: { "x-access-token": token },
-      });
-      setUser(res.data);
-    };
-    fetchUser();
+    try {
+      const fetchUser = async () => {
+        const res = await axios.get(`/users/${id}`, {
+          headers: { "x-access-token": token },
+        });
+        setUser(res.data);
+      };
+      fetchUser();
+    } catch (err) {
+      console.log(err);
+    }
   }, [id]);
-
+  console.log(user);
+  const isEmpty = (obj) => {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) return false;
+    }
+    return true;
+  };
   return (
     <>
       <Navbar />
@@ -69,21 +81,27 @@ export default function Profile() {
           <Leftbar />
         </Grid>
         <Grid item sm={12} md={10} xs={12}>
-          <div className={classes.profile}>
-            <ProfileImage user={user} changeUser={(user) => setUser(user)} />
-            <div className={classes.profileContainer}>
-              <div className={classes.profileRight}>
-                <ProfileRight
-                  key={user._id}
-                  user={user}
-                  changeUser={(user) => setUser(user)}
-                />
-              </div>
-              <div className={classes.profileLeft}>
-                <Feed userId={id} />
+          {isEmpty(user) ? (
+            <div className={classes.profile}>
+              <ErrorPage string={"Người dùng không tồn tại"} />
+            </div>
+          ) : (
+            <div className={classes.profile}>
+              <ProfileImage user={user} changeUser={(user) => setUser(user)} />
+              <div className={classes.profileContainer}>
+                <div className={classes.profileRight}>
+                  <ProfileRight
+                    key={user._id}
+                    user={user}
+                    changeUser={(user) => setUser(user)}
+                  />
+                </div>
+                <div className={classes.profileLeft}>
+                  <Feed userId={id} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </Grid>
       </Grid>
     </>

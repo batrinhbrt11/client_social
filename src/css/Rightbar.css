@@ -1,12 +1,15 @@
 .textContent {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 0.85rem !important;
+    font-size: 1rem !important;
     text-overflow: ellipsis;
-    line-height: 1.5;
+    color: black;
     font-weight: 300 !important;
+}
+.textContent p {
+    margin-bottom: 0 !important;
 }
 @media only screen and (max-width: 400px) {
     .feed {

@@ -4,7 +4,6 @@ import "../css/Rightbar.css";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
 import parse from "html-react-parser";
-import ItemNoti from "./ItemNoti";
 import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,11 +13,6 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
   },
 
-  rightBarFriendInfo: {
-    marginBottom: "1rem",
-    display: "flex",
-    alignItems: "center",
-  },
   image: {
     marginRight: theme.spacing(1),
   },
@@ -46,47 +40,52 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   textTitle: {
-    textOverflow: " ellipsis",
+    color: "black",
+    textOverflow: "ellipsis",
     overflow: "hidden",
     whiteSpace: "nowrap",
     fontWeight: "600",
   },
+  subtitle: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  date: {
+    color: "rgb(172, 170, 170)",
+    fontSize: "0.75rem",
+    fontStyle: "italic",
+  },
+  link: {
+    fontSize: "0.75rem",
+    fontStyle: "italic",
+  },
 }));
-
-export default function Rightbar() {
+export default function ItemNoti({ noti }) {
   const classes = useStyles();
-  const { token } = useContext(AuthContext);
-  const [newNotification, setNewNotification] = useState([]);
-  const fetchNotification = async () => {
-    try {
-      const res = await axios.get("/notifications/?page=10", {
-        headers: { Authorization: "Bearer " + token },
-      });
-      const data = res.data;
-      setNewNotification(data);
-    } catch (err) {
-      console.log("Requet cancel", err.message);
-    }
+  const [cate, setCate] = useState("");
+  const getCateName = async (id) => {
+    const cate = await axios.get(`/admin/categories/${id}`);
+
+    setCate(cate.data);
   };
-
   useEffect(() => {
-    fetchNotification();
+    getCateName(noti.categoryId);
   }, []);
-
   return (
-    <Container className={classes.container}>
-      <div className={classes.rightBarWrapper}>
-        <Typography variant="h6">Thông báo</Typography>
-        <ul className={classes.rightbarList}>
-          {newNotification.map((noti) => (
-            <li key={noti._id} className={classes.rightBarNoti}>
-              <Link to={`/notification/noti/${noti._id}`}>
-                <ItemNoti key={noti._id} noti={noti} />
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <div className={classes.rightBarNotiInfo}>
+      <Typography variant="body1" className={classes.textTitle}>
+        {noti.title}
+      </Typography>
+      <div className="textContent">{parse(noti.content)}</div>
+      <div className={classes.subtitle}>
+        <Link to={`/notification/${cate.slug}`} className={classes.link}>
+          {cate.name}
+        </Link>
+        <span className={classes.date}>
+          Ngày đăng: {noti.createdAt.slice(0, 10)}
+        </span>
       </div>
-    </Container>
+    </div>
   );
 }

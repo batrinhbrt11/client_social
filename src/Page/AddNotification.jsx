@@ -39,7 +39,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AddNotification({socket}) {
+export default function AddNotification({ socket }) {
   const classes = useStyles();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [errAlert, setErrAlert] = React.useState(false);
@@ -71,7 +71,7 @@ export default function AddNotification({socket}) {
         content: content,
         categoryId: categoryId,
       };
-      console.log(notification);
+
       let res = await axios.post(`/falcuty/notifications`, notification, {
         headers: { Authorization: "Bearer " + token },
       });
@@ -81,8 +81,8 @@ export default function AddNotification({socket}) {
           navigate("/falcuty");
         }, 2000);
         socket.emit("postNoification", {
-          message: res.data.message
-        })
+          message: res.data.message,
+        });
       } else {
         setErrAlert(true);
         setErrorMsg(res.data.message);

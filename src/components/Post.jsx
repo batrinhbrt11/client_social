@@ -146,6 +146,7 @@ const useStyles = makeStyles((theme) => ({
   textArea: {
     width: "100%",
     resize: "none",
+    color: "black",
     "&:focus": {
       outLine: "none",
     },
@@ -185,6 +186,15 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     border: "none",
   },
+  commentsList: {
+    padding: "0",
+    margin: "0",
+    position: "sticky",
+    maxHeight: "200px",
+    top: "0",
+    overflowY: "scroll",
+    listStyle: "none",
+  },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -203,7 +213,7 @@ export default function Post({ post, delete_post }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const [showCmt, setShowCmt] = useState(false);
   //modal delete
   const [openDelete, setOpenDelete] = useState(false);
   const handleOpenDelete = () => {
@@ -321,7 +331,10 @@ export default function Post({ post, delete_post }) {
       console.log(err);
     }
   };
-
+  const handleShowCmt = (e) => {
+    e.preventDefault();
+    showCmt ? setShowCmt(false) : setShowCmt(true);
+  };
   return (
     <Container className={classes.post}>
       <div className={classes.postWrapper}>
@@ -508,29 +521,42 @@ export default function Post({ post, delete_post }) {
                 Chưa có bình luận
               </Typography>
             ) : (
-              <Typography variant="body1" className={classes.TextCounter}>
-                {comments.length} bình luận
-              </Typography>
+              <Button>
+                <Typography
+                  variant="body1"
+                  className={classes.TextCounter}
+                  onClick={handleShowCmt}
+                >
+                  {comments.length} bình luận
+                </Typography>
+              </Button>
             )}
           </div>
         </div>
         <Divider />
-        {comments.length === 0 ? (
-          <></>
-        ) : (
-          comments.map((cmt) => (
-            <Comment
-              cmt={cmt}
-              deleteComment={(id) =>
-                setComments(comments.filter((post) => post._id !== id))
-              }
-            />
-          ))
+        {showCmt && (
+          <div className={classes.commentsList}>
+            {comments.length === 0 ? (
+              <></>
+            ) : (
+              comments.map((cmt) => (
+                <Comment
+                  cmt={cmt}
+                  deleteComment={(id) =>
+                    setComments(comments.filter((post) => post._id !== id))
+                  }
+                />
+              ))
+            )}
+          </div>
         )}
 
         <InputCmt
           idPost={post._id}
-          addCmts={(comment) => setComments([...comments, comment])}
+          addCmts={(comment) => {
+            setComments([...comments, comment]);
+            setShowCmt(true);
+          }}
         />
       </div>
     </Container>

@@ -1,5 +1,7 @@
 import React from "react";
 import { Container, makeStyles } from "@material-ui/core";
+import "../css/ErrorPage.css";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   right: {
     [theme.breakpoints.between("xs", "sm")]: {
@@ -8,19 +10,34 @@ const useStyles = makeStyles((theme) => ({
   },
   contentpad: {
     paddingTop: theme.spacing(10),
+    width: "100%",
+    height: "calc(100% - 80px)",
   },
-  error: {
-    objectFit: "cover",
-    width: "100vw",
-    height: "100vh",
-  },
+  error: {},
 }));
-export default function ErrorPage() {
+export default function ErrorPage({ string }) {
   const classes = useStyles();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
-    <div>
-      <img alt="" src={PF + "/404errror.jpg"} className={classes.error} />
+    <div className={classes.contentpad}>
+      <h1>{string}</h1>
+
+      <section className="error-container">
+        <span className="four">
+          <span className="screen-reader-text">4</span>
+        </span>
+        <span className="zero">
+          <span className="screen-reader-text">0</span>
+        </span>
+        <span className="four">
+          <span className="screen-reader-text">4</span>
+        </span>
+      </section>
+      <div className="link-container">
+        <Link to="/" className="more-link ">
+          Quay lại trang chủ
+        </Link>
+      </div>
     </div>
   );
 }
