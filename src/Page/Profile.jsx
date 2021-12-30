@@ -66,7 +66,7 @@ export default function Profile() {
       console.log(err);
     }
   }, [id]);
-  console.log(user);
+
   const isEmpty = (obj) => {
     for (var key in obj) {
       if (obj.hasOwnProperty(key)) return false;

@@ -195,13 +195,15 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "scroll",
     listStyle: "none",
   },
+  shareVideo: {
+    borderBottom: "1px solid black",
+  },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function Post({ post, delete_post }) {
   const classes = useStyles();
-
   const [status, setStatus] = useState(post);
   const [like, setLike] = useState(status.likes.length);
   const [isLiked, setIsLiked] = useState(false);
@@ -210,6 +212,8 @@ export default function Post({ post, delete_post }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open_menu = Boolean(anchorEl);
   const desc = useRef();
+  const videoLink = useRef();
+  const [file, setFile] = useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -318,6 +322,7 @@ export default function Post({ post, delete_post }) {
       const newPost = {
         userId: user._id,
         desc: desc.current.value,
+        video: videoLink.current.value,
       };
       await axios.put(`/posts/${status._id}`, newPost, {
         headers: { "x-access-token": token },
@@ -433,10 +438,19 @@ export default function Post({ post, delete_post }) {
                           className={classes.textArea}
                           ref={desc}
                         />
+
                         <img
                           src={status.img}
                           alt=""
                           className={classes.postImg}
+                        />
+                        <input
+                          placeholder="Link video"
+                          type="text"
+                          className={classes.shareVideo}
+                          id="file_img"
+                          defaultValue={status.video}
+                          ref={videoLink}
                         />
                       </form>
                     </DialogContent>

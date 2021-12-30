@@ -57,15 +57,13 @@ export default function Feed({ userId }) {
         }
       }
     };
-    window.scrollTo(0, 0);
-    setTimeout(() => {
-      fetchPosts();
-    }, 3000);
+
+    fetchPosts();
 
     return () => {
       ourRequest.cancel("cancel by user"); //3rd step
     };
-  }, [userId, user._id]);
+  }, [userId, user._id, posts.length]);
 
   let [page, setPage] = useState(2);
   const [noMore, setNoMore] = useState(true);
@@ -112,7 +110,9 @@ export default function Feed({ userId }) {
   return (
     <Container className="feed">
       <div className={classes.feedWrapper}>
-        {(!userId || userId === user._id) && <Share />}
+        {(!userId || userId === user._id) && (
+          <Share addPost={(post) => setPosts([...posts, post])} />
+        )}
         <div>
           <InfiniteScroll
             dataLength={posts.length}

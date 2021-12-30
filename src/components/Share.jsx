@@ -16,6 +16,7 @@ import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
 import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "@firebase/storage";
+import { CircularProgress } from "@mui/material";
 const useStyles = makeStyles((theme) => ({
   share: {
     width: "100%",
@@ -112,14 +113,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Share() {
+export default function Share({ addPost }) {
   const classes = useStyles();
   const { token, user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
   const videoLink = useRef();
   const [file, setFile] = useState(null);
-  const [progress, setProgress] = useState(0);
+
+  const [progress, setProgress] = useState(false);
   const uploadFiles = (file) => {
     return new Promise((resolve, reject) => {
       if (!file) resolve("");
@@ -131,7 +133,6 @@ export default function Share() {
           const prog = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          setProgress(prog);
         },
         (err) => {
           console.log(err);
@@ -148,9 +149,9 @@ export default function Share() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const file = e.target[0].files[0];
-
+    console.log(file);
     try {
+      setProgress(true);
       const link = await uploadFiles(file);
       if (
         link === "" &&
@@ -171,11 +172,16 @@ export default function Share() {
               "https://www.youtube.com/watch?v=",
               "https://www.youtube.com/embed/"
             ),
+            likes: [],
           };
           await axios.post("/posts", newPost, {
             headers: { "x-access-token": token },
           });
-          window.location.reload();
+          addPost(newPost);
+          desc.current.value = "";
+          setFile(null);
+          videoLink.current.value = "";
+          setProgress(false);
         } else {
           alert("Link không hợp lệ vui lòng nhập lại");
         }
@@ -246,8 +252,12 @@ export default function Share() {
             </div>
           </div>
 
-          <Button type="submit" className={classes.shareButton}>
-            Share
+          <Button
+            type="submit"
+            disable={progress}
+            className={classes.shareButton}
+          >
+            {progress ? <CircularProgress color="inherit" /> : "Đăng bài"}
           </Button>
         </form>
       </div>
