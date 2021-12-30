@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React from "react";
-import { Container, makeStyles, Typography } from "@material-ui/core";
-=======
 import React, { useContext, useEffect, useState } from "react";
 import { Avatar, Container, makeStyles, Typography } from "@material-ui/core";
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
 import "../css/Rightbar.css";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";

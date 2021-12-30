@@ -14,7 +14,9 @@ import Slide from "@mui/material/Slide";
 import Alert from "@mui/material/Alert";
 import EditNotificationDialog from "./EditNotificationForm";
 import TextField from "@mui/material/TextField";
-
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -25,9 +27,11 @@ export default function NotificationTable() {
   const [alertContent, setAlertContent] = useState("");
   const [alertType, setAlertType] = useState("");
   const [notifications, setNotifications] = useState([]);
+  const [displayedNotifications, setDisplayedNotifications] = useState([]);
   const { token, user } = useContext(AuthContext);
   const [notificationId, setNotificationId] = useState("");
-
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState("all");
   const [notification, setNotification] = useState({});
   const [search, setSearch] = useState("");
   //Mở dialog form chỉnh sửa thông báo
@@ -65,6 +69,7 @@ export default function NotificationTable() {
         (not) => not._id !== notificationId
       );
       setNotifications(refreshNotifications);
+      setDisplayedNotifications(refreshNotifications);
       setAlert(true);
       setAlertContent(res.data);
       setAlertType("success");
@@ -82,35 +87,51 @@ export default function NotificationTable() {
       });
       console.log(res.data);
       setNotifications(res.data);
+      setDisplayedNotifications(res.data);
     } catch (err) {
       if (axios.isCancel(err)) {
         console.log("Request cancel", err.message);
       }
     }
   };
+
+  const fectchCategories = async () => {
+    try{
+        let res = await axios.get(`/falcuty/categories`,
+        {
+          headers: { "Authorization": "Bearer " + token },
+        });
+        let unSelectedCategory = res.data.filter(e => e._id !== notification.categoryId);
+        setCategories(unSelectedCategory);
+    }catch(error){
+
+    }  
+  } 
   useEffect(() => {
     fetchNotifications();
+    fectchCategories();
+    
   }, []);
 
+  function filterResults(list, category) {
+    if(category === "all"){
+      return list;
+    }
+    else
+    {
+      return list.filter(x => x.categoryId === category);
+    }
+  }
+
+
   useEffect(() => {
-    let query = search.toLowerCase();
-    let searchedNotifications = notifications.filter(noti => noti.title.indexOf(query) >= 0 );
-    setNotifications(searchedNotifications);
-  }, [search]);
+    let newNotifications = filterResults(notifications, category);
+    setDisplayedNotifications(newNotifications);
+  }, [category]);
+
   return (
     <>
       <div className="container">
-        <TextField
-          id="filled-number"
-          label="Tìm kiếm"
-          type="text"
-          placeholder="Tìm kiếm..."
-          onChange={(e) => setSearch(e.target.value)}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          variant="filled"
-        />
         {alert ? (
           <Alert className="mt-1 mb-1" severity={alertType} in={alert}>
             {alertContent}
@@ -118,6 +139,28 @@ export default function NotificationTable() {
         ) : (
           <></>
         )}
+        <div className="row mb-4">
+          <div className="col-12 col-md-6">
+          <FormControl >
+              <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                Chuyên mục
+              </InputLabel>
+              <NativeSelect
+                defaultValue={"all"}
+                inputProps={{
+                  name: 'category',
+                  id: 'uncontrolled-native',
+                }}
+                onChange={(e) => {setCategory(e.target.value);}}
+              >
+                <option value="all">Tất cả</option>
+                {categories.map((cate) => (
+                  <option value={cate._id}>{cate.name}</option>
+                ))}
+              </NativeSelect>
+            </FormControl>
+          </div>
+        </div>   
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -129,7 +172,7 @@ export default function NotificationTable() {
             </tr>
           </thead>
           <tbody>
-            {notifications.map((notification, index) => (
+            {displayedNotifications.length > 1 ? (displayedNotifications.map((notification, index) => (
               <tr>
                 <td>{index + 1}</td>
                 <td>{notification.title}</td>
@@ -152,7 +195,7 @@ export default function NotificationTable() {
                   </button>
                 </td>
               </tr>
-            ))}
+            ))) : (<div className="text-center">Chưa có thông báo cho chuyên mục này</div>)}
           </tbody>
         </table>
       </div>
@@ -188,6 +231,7 @@ export default function NotificationTable() {
         setAlert={setAlert}
         setAlertContent={setAlertContent}
         setAlertType={setAlertType}
+        categories={categories}
       ></EditNotificationDialog>
     </>
   );

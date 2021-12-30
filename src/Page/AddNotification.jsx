@@ -20,6 +20,7 @@ import Slide from "@mui/material/Slide";
 import { Grid, makeStyles } from "@material-ui/core";
 import Leftbar from "../components/Leftbar";
 import Navbar from "../components/Navbar";
+import io from "socket.io-client"
 
 import ErrorPage from "../components/ErrorPage";
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +38,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AddNotification({ socket }) {
+export default function AddNotification() {
   const classes = useStyles();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [errAlert, setErrAlert] = React.useState(false);
@@ -49,6 +50,26 @@ export default function AddNotification({ socket }) {
   const [categoryId, setCategoryId] = useState("");
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
+ 
+  const [socket, setSocket] = useState(null);
+  const setupSocket = () => {
+    if(!socket && token && user){
+      const newSocket = io("http://localhost:5000", {
+        query: { token }, transports : ['websocket']
+      })
+      newSocket.on("connect", () => {
+        console.log("Connected");
+      })
+      newSocket.on("disconect", () => {
+        setSocket(null);
+      })
+      setSocket(newSocket);
+    }
+  }
+  useEffect(() => {
+    setupSocket()
+  },[])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (

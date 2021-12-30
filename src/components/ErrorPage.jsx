@@ -1,11 +1,7 @@
 import React from "react";
-<<<<<<< HEAD
-import { makeStyles } from "@material-ui/core";
-=======
 import { Container, makeStyles } from "@material-ui/core";
 import "../css/ErrorPage.css";
 import { Link } from "react-router-dom";
->>>>>>> 4d804319a2000c33df950cbb3b27af22e0167f4e
 const useStyles = makeStyles((theme) => ({
   right: {
     [theme.breakpoints.between("xs", "sm")]: {

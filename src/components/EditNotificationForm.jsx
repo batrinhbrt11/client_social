@@ -11,8 +11,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from "axios";
 import NativeSelect from '@mui/material/NativeSelect';
-export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, notifications, token, setAlert, setAlertContent, setAlertType}){
-    const [categories, setCategories] = useState([]);
+export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, notifications, token, setAlert, setAlertContent, setAlertType, categories}){   
     const [title, setTitle] = useState(`${notification.title}`);
     const [content, setContent] = useState('');
     const [categoryId, setCategoryId] = useState(`${notification.categoryId}`);
@@ -63,21 +62,6 @@ export default function EditNotificationForm({openEdit, handleCloseEdit, Transit
         setContent(notification.content);
         setCategoryId(notification.categoryId)
     },[notification])
-    useEffect(() => {     
-        const fectchCategories = async () => {
-            try{
-                let res = await axios.get(`/falcuty/categories`,
-                {
-                  headers: { "Authorization": "Bearer " + token },
-                });
-                let unSelectedCategory = res.data.filter(e => e._id !== notification.categoryId);
-                setCategories(unSelectedCategory);
-            }catch(error){
-    
-            }  
-        } 
-        fectchCategories();
-    },[])
 
     return(
         <Dialog

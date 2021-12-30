@@ -38,7 +38,7 @@ export default function Falcuty() {
             <Grid item sm={12} md={10} xs={12} className={classes.contentpad}>
               <Link
                 to="/falcuty/notification/add"
-                className="btn btn-success mb-3 mt-3"
+                className="btn btn-success mb-3 mt-3 ml-3"
               >
                 Tạo thông báo
               </Link>

@@ -151,7 +151,7 @@ export default function Navbar() {
       socket.on("newNotification", (msg) => {
         setMessage(msg);
         console.log(msg);
-        setOpen(true);
+        setOpenNotifiAlert(true);
       })
     }
   });
@@ -366,12 +366,12 @@ export default function Navbar() {
       </AppBar>
       <Snackbar open={openNotifiAlert} autoHideDuration={6000} onClose={() => {setOpenNotifiAlert(false)}}>
       <a href={message.url}><Alert onClose={() => {setOpenNotifiAlert(false)}} severity="success" sx={{ width: '100%' }}>
-          {message.falcutyName} vừa đăng thông báo "{message.title}"
+          {message.name} vừa đăng thông báo "{message.title}"
         </Alert></a>
       </Snackbar>
       {message ? 
       (<a href={message.url}><Alert severity="success">
-        {message.falcutyName} vừa đăng thông báo "{message.title}"
+        {message.name} vừa đăng thông báo "{message.title}"
         </Alert></a>) : (<></>)}
     </>
   );
