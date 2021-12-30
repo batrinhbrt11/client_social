@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Container,
@@ -8,10 +8,7 @@ import {
   Divider,
   Avatar,
 } from "@material-ui/core";
-import { theme } from "../theme";
 import { AuthContext } from "../Context/AuthContext";
-import { color } from "@mui/system";
-import { PlayCircleFilledWhite } from "@material-ui/icons";
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ListIcon from "@mui/icons-material/List";

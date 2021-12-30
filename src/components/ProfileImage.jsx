@@ -5,15 +5,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import DialogContentText from "@mui/material/DialogContentText";
-import PermMediaIcon from "@mui/icons-material/PermMedia";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "@firebase/storage";
 import { AuthContext } from "../Context/AuthContext";
 import { CircularProgress } from "@mui/material";
-import { Facebook } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   profileCover: {
     height: "400px",

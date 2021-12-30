@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -17,11 +16,11 @@ import DoneIcon from "@mui/icons-material/Done";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { Grid, makeStyles } from "@material-ui/core";
 import Leftbar from "../components/Leftbar";
 import Navbar from "../components/Navbar";
+import io from "socket.io-client"
 
 import ErrorPage from "../components/ErrorPage";
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +38,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AddNotification({ socket }) {
+export default function AddNotification() {
   const classes = useStyles();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [errAlert, setErrAlert] = React.useState(false);
@@ -51,6 +50,26 @@ export default function AddNotification({ socket }) {
   const [categoryId, setCategoryId] = useState("");
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
+ 
+  const [socket, setSocket] = useState(null);
+  const setupSocket = () => {
+    if(!socket && token && user){
+      const newSocket = io("http://localhost:5000", {
+        query: { token }, transports : ['websocket']
+      })
+      newSocket.on("connect", () => {
+        console.log("Connected");
+      })
+      newSocket.on("disconect", () => {
+        setSocket(null);
+      })
+      setSocket(newSocket);
+    }
+  }
+  useEffect(() => {
+    setupSocket()
+  },[])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -62,7 +81,7 @@ export default function AddNotification({ socket }) {
       categoryId.length === 0
     ) {
       setErrorMsg(
-        "Tiêu đề hoặc nội dung quá ngắn vui lòng nhập đầy đủ thông tin"
+        "Tiêu đề hoặc nội dung quá ngắn, vui lòng nhập đầy đủ thông tin"
       );
       setErrAlert(true);
     } else {
@@ -81,8 +100,8 @@ export default function AddNotification({ socket }) {
           navigate("/falcuty");
         }, 2000);
         socket.emit("postNoification", {
-          message: res.data.message,
-        });
+          message: res.data.message
+        }) 
       } else {
         setErrAlert(true);
         setErrorMsg(res.data.message);

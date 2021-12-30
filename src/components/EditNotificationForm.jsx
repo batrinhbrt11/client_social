@@ -1,24 +1,17 @@
 import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import React, {useState, useEffect, useContext} from "react";
-import {useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import axios from "axios";
-import { forEach } from 'draft-js/lib/DefaultDraftBlockRenderMap';
 import NativeSelect from '@mui/material/NativeSelect';
-export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, notifications, token, setAlert, setAlertContent, setAlertType}){
-    const [categories, setCategories] = useState([]);
+export default function EditNotificationForm({openEdit, handleCloseEdit, Transition, notification, notifications, token, setAlert, setAlertContent, setAlertType, categories}){   
     const [title, setTitle] = useState(`${notification.title}`);
     const [content, setContent] = useState('');
     const [categoryId, setCategoryId] = useState(`${notification.categoryId}`);
@@ -69,21 +62,6 @@ export default function EditNotificationForm({openEdit, handleCloseEdit, Transit
         setContent(notification.content);
         setCategoryId(notification.categoryId)
     },[notification])
-    useEffect(() => {     
-        const fectchCategories = async () => {
-            try{
-                let res = await axios.get(`/falcuty/categories`,
-                {
-                  headers: { "Authorization": "Bearer " + token },
-                });
-                let unSelectedCategory = res.data.filter(e => e._id !== notification.categoryId);
-                setCategories(unSelectedCategory);
-            }catch(error){
-    
-            }  
-        } 
-        fectchCategories();
-    },[])
 
     return(
         <Dialog

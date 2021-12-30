@@ -9,8 +9,6 @@ import {
   TextareaAutosize,
 } from "@material-ui/core";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
-import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import CloseIcon from "@mui/icons-material/Close";
 import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
