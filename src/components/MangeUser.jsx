@@ -127,7 +127,7 @@ export default function MangeUser() {
       const idObject = { _id: val._id };
       arr.push(idObject);
     });
-    console.log(arr);
+
     const newUser = {
       name: editName.current.value,
       categories: arr,
@@ -191,15 +191,13 @@ export default function MangeUser() {
         setError("Không đươc để trống tên tài khoản ");
       } else if (addPassword.current.value.length < 6) {
         setError("Độ dài mật khẩu phải lớn hơn 6 ");
-      } else if (addAuth.current.value === "0") {
-        setError("Chọn chức vụ ");
       } else {
         const newUser = {
           name: addName.current.value,
           username: addUserName.current.value,
           email: addEmail.current.value,
           password: addPassword.current.value,
-          authorize: addAuth.current.value,
+          authorize: "2",
         };
         await axios.post("/users", newUser, {
           headers: { "x-access-token": token },
@@ -213,15 +211,13 @@ export default function MangeUser() {
         setSuccess("Thêm Khoa thành công");
       }
     } catch (err) {
-      setError("Tài khoản đã tồn tại");
+      setError("Tài khoản hoặc tên Khoa đã tồn tại");
     }
   };
   //get user
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/users", {
-        headers: { "x-access-token": token },
-      });
+      const res = await axios.get("/admin/faculties");
       const data = res.data;
       setRows(data);
     } catch (err) {
@@ -330,7 +326,7 @@ export default function MangeUser() {
             }
           }}
         >
-          Sửa Khoa
+          Thêm chuyên mục
         </Button>
       </div>
 
@@ -348,7 +344,7 @@ export default function MangeUser() {
       {choice === "Edit" ? (
         //sua nguoi dung
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Sửa Khoa</DialogTitle>
+          <DialogTitle>Thêm danh mục</DialogTitle>
           <DialogContent>
             <form className="form_update_info">
               <div className="form_update_info-item">
@@ -489,20 +485,6 @@ export default function MangeUser() {
                   required
                   onClick={(e) => setError("")}
                 />
-              </div>
-              <div className="form_update_info-item">
-                <label htmlFor="faculty" className="form_update_info-label">
-                  Phân quyền:
-                </label>
-                <select
-                  className="form_update_info-selection"
-                  ref={addAuth}
-                  onClick={(e) => setError("")}
-                >
-                  <option value="0">Chức vụ</option>
-                  <option value="1">Quản trị</option>
-                  <option value="2">Quản lí</option>
-                </select>
               </div>
             </form>
           </DialogContent>

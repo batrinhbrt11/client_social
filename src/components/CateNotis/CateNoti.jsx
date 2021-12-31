@@ -14,7 +14,7 @@ export default function CateNoti() {
         setNotis(data);
         let arr = [];
         data.map((noti) => {
-          if (noti.name.includes("KHOA")) {
+          if (noti.name.toUpperCase().includes("KHOA")) {
             arr.push(noti);
           }
         });
@@ -42,7 +42,7 @@ export default function CateNoti() {
                 <div>
                   <div className="item-inner"></div>
                   <div className="item-footer">
-                    <h5>{noti.name} </h5>
+                    <h5>{noti.name.toUpperCase()} </h5>
                   </div>
                 </div>
               </div>
@@ -63,7 +63,7 @@ export default function CateNoti() {
                 <div>
                   <div className="item-inner"></div>
                   <div className="item-footer">
-                    <h5>{noti.name} </h5>
+                    <h5>{noti.name.toUpperCase()} </h5>
                   </div>
                 </div>
               </div>
