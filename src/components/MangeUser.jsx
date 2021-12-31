@@ -99,7 +99,7 @@ export default function MangeUser() {
 
     {
       field: "name",
-      headerName: "Tên người dùng",
+      headerName: "Tên Khoa",
       sortable: false,
       width: 300,
       flex: 1,
@@ -141,7 +141,7 @@ export default function MangeUser() {
       headers: { "x-access-token": token },
     });
     setRows(res.data);
-    setSuccess("Sửa người dùng thành công");
+    setSuccess("Sửa Khoa thành công");
     handleClose();
   };
 
@@ -166,7 +166,7 @@ export default function MangeUser() {
       .then(function (res) {
         setRows(res.data);
         handleClose();
-        setSuccess("Xóa người dùng thành công");
+        setSuccess("Xóa Khoa thành công");
       })
       .catch(function (error) {
         console.log(error);
@@ -182,7 +182,7 @@ export default function MangeUser() {
     //call api
     try {
       if (addName.current.value === "") {
-        setError("Điền tên người dùng");
+        setError("Điền tên Khoa");
       } else if (addEmail.current.value === "") {
         setError("Không đươc để trống email ");
       } else if (!filter.test(addEmail.current.value)) {
@@ -210,7 +210,7 @@ export default function MangeUser() {
         });
         setRows(res.data);
         handleClose();
-        setSuccess("Thêm người dùng thành công");
+        setSuccess("Thêm Khoa thành công");
       }
     } catch (err) {
       setError("Tài khoản đã tồn tại");
@@ -298,7 +298,7 @@ export default function MangeUser() {
           className={classes.delete_btn}
           onClick={(e) => handleClickOpen("Delete")}
         >
-          Xóa người dùng
+          Xóa Khoa
         </Button>
         <Button
           startIcon={<EditIcon />}
@@ -330,7 +330,7 @@ export default function MangeUser() {
             }
           }}
         >
-          Sửa người dùng
+          Sửa Khoa
         </Button>
       </div>
 
@@ -348,12 +348,12 @@ export default function MangeUser() {
       {choice === "Edit" ? (
         //sua nguoi dung
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Sửa người dùng</DialogTitle>
+          <DialogTitle>Sửa Khoa</DialogTitle>
           <DialogContent>
             <form className="form_update_info">
               <div className="form_update_info-item">
                 <label htmlFor="fname" className="form_update_info-label">
-                  Tên người dùng
+                  Tên Khoa
                 </label>
                 <input
                   aria-label=""
@@ -412,10 +412,10 @@ export default function MangeUser() {
       choice === "Delete" ? (
         //delete
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Xóa người dùng</DialogTitle>
+          <DialogTitle>Xóa Khoa</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Không thể khôi phục, xác nhận xóa các người dùng này?
+              Không thể khôi phục, xác nhận xóa các Khoa này?
             </DialogContentText>
           </DialogContent>
 
@@ -432,14 +432,14 @@ export default function MangeUser() {
         //end delete
         //add
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Thêm người dùng</DialogTitle>
+          <DialogTitle>Thêm Khoa</DialogTitle>
 
           <DialogContent>
             {error && <span className="error">{error}</span>}
             <form className="form_update_info">
               <div className="form_update_info-item">
                 <label htmlFor="fname" className="form_update_info-label">
-                  Tên người dùng:
+                  Tên Khoa:
                 </label>
                 <input
                   aria-label=""
