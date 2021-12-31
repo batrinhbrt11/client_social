@@ -14,9 +14,9 @@ import Slide from "@mui/material/Slide";
 import Alert from "@mui/material/Alert";
 import EditNotificationDialog from "./EditNotificationForm";
 import TextField from "@mui/material/TextField";
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -85,7 +85,7 @@ export default function NotificationTable() {
       const res = await axios.get(`falcuty/notifications`, {
         headers: { Authorization: "Bearer " + token },
       });
-      console.log(res.data);
+
       setNotifications(res.data);
       setDisplayedNotifications(res.data);
     } catch (err) {
@@ -96,33 +96,28 @@ export default function NotificationTable() {
   };
 
   const fectchCategories = async () => {
-    try{
-        let res = await axios.get(`/falcuty/categories`,
-        {
-          headers: { "Authorization": "Bearer " + token },
-        });
-        let unSelectedCategory = res.data.filter(e => e._id !== notification.categoryId);
-        setCategories(unSelectedCategory);
-    }catch(error){
-
-    }  
-  } 
+    try {
+      let res = await axios.get(`/falcuty/categories`, {
+        headers: { Authorization: "Bearer " + token },
+      });
+      let unSelectedCategory = res.data.filter(
+        (e) => e._id !== notification.categoryId
+      );
+      setCategories(unSelectedCategory);
+    } catch (error) {}
+  };
   useEffect(() => {
     fetchNotifications();
     fectchCategories();
-    
   }, []);
 
   function filterResults(list, category) {
-    if(category === "all"){
+    if (category === "all") {
       return list;
-    }
-    else
-    {
-      return list.filter(x => x.categoryId === category);
+    } else {
+      return list.filter((x) => x.categoryId === category);
     }
   }
-
 
   useEffect(() => {
     let newNotifications = filterResults(notifications, category);
@@ -141,17 +136,19 @@ export default function NotificationTable() {
         )}
         <div className="row mb-4">
           <div className="col-12 col-md-6">
-          <FormControl >
+            <FormControl>
               <InputLabel variant="standard" htmlFor="uncontrolled-native">
                 Chuyên mục
               </InputLabel>
               <NativeSelect
                 defaultValue={"all"}
                 inputProps={{
-                  name: 'category',
-                  id: 'uncontrolled-native',
+                  name: "category",
+                  id: "uncontrolled-native",
                 }}
-                onChange={(e) => {setCategory(e.target.value);}}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                }}
               >
                 <option value="all">Tất cả</option>
                 {categories.map((cate) => (
@@ -160,7 +157,7 @@ export default function NotificationTable() {
               </NativeSelect>
             </FormControl>
           </div>
-        </div>   
+        </div>
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -172,30 +169,36 @@ export default function NotificationTable() {
             </tr>
           </thead>
           <tbody>
-            {displayedNotifications.length > 1 ? (displayedNotifications.map((notification, index) => (
-              <tr>
-                <td>{index + 1}</td>
-                <td>{notification.title}</td>
-                <td>{notification.category[0].name}</td>
-                <td>{moment(notification.createdAt).format("lll")}</td>
-                <td>
-                  <button>
-                    <EditIcon
-                      onClick={() => {
-                        handleClickOpenEdit();
-                        setNotification(notification);
-                      }}
-                    />
-                    <DeleteIcon
-                      onClick={() => {
-                        handleClickOpenDelete();
-                        setNotificationId(notification._id);
-                      }}
-                    />
-                  </button>
-                </td>
-              </tr>
-            ))) : (<div className="text-center">Chưa có thông báo cho chuyên mục này</div>)}
+            {displayedNotifications.length > 1 ? (
+              displayedNotifications.map((notification, index) => (
+                <tr>
+                  <td>{index + 1}</td>
+                  <td>{notification.title}</td>
+                  <td>{notification.category[0].name}</td>
+                  <td>{moment(notification.createdAt).format("lll")}</td>
+                  <td>
+                    <button>
+                      <EditIcon
+                        onClick={() => {
+                          handleClickOpenEdit();
+                          setNotification(notification);
+                        }}
+                      />
+                      <DeleteIcon
+                        onClick={() => {
+                          handleClickOpenDelete();
+                          setNotificationId(notification._id);
+                        }}
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <div className="text-center">
+                Chưa có thông báo cho chuyên mục này
+              </div>
+            )}
           </tbody>
         </table>
       </div>
@@ -226,7 +229,7 @@ export default function NotificationTable() {
         handleCloseEdit={handleCloseEdit}
         Transition={Transition}
         notification={notification}
-        notifications = {notifications}
+        notifications={notifications}
         token={token}
         setAlert={setAlert}
         setAlertContent={setAlertContent}

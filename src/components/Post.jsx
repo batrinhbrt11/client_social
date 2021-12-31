@@ -10,6 +10,8 @@ import {
   Button,
   TextareaAutosize,
 } from "@material-ui/core";
+import PermMediaIcon from "@mui/icons-material/PermMedia";
+import CloseIcon from "@mui/icons-material/Close";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import GradeIcon from "@mui/icons-material/Grade";
 import { Link } from "react-router-dom";
@@ -24,8 +26,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-
+import { storage } from "../firebase";
 import Carousel from "nuka-carousel";
+import { ref, getDownloadURL, uploadBytesResumable } from "@firebase/storage";
+
+import { CircularProgress } from "@mui/material";
 const useStyles = makeStyles((theme) => ({
   post: {
     marginTop: theme.spacing(3),
@@ -198,6 +203,39 @@ const useStyles = makeStyles((theme) => ({
   shareVideo: {
     borderBottom: "1px solid black",
   },
+  shareImgContainer: {
+    padding: "0 20px 10px 20px",
+    position: "relative",
+  },
+  shareImg: {
+    width: "100%",
+    objectFit: "cover",
+  },
+  shareCancelImg: {
+    position: "absolute",
+    top: "0",
+    right: "20px",
+    cursor: "pointer",
+    opacity: "0.7",
+    color: "red",
+  },
+  shareOption: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: "1rem",
+    cursor: "pointer",
+    [theme.breakpoints.down("sm")]: {
+      marginTop: "10px",
+    },
+  },
+  shareIcon: {
+    fontSize: "1rem",
+    marginRight: "3px",
+  },
+  shareOptionText: {
+    fontSize: "14px",
+    fontWeight: "700",
+  },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -213,7 +251,9 @@ export default function Post({ post, delete_post }) {
   const open_menu = Boolean(anchorEl);
   const desc = useRef();
   const videoLink = useRef();
+  const [imgLink, setImgLink] = useState(status.img);
   const [file, setFile] = useState(null);
+  const [progress, setProgress] = useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -233,6 +273,8 @@ export default function Post({ post, delete_post }) {
   //modal edit
   const [openEdit, setOpenEdit] = useState(false);
   const handleOpenEdit = () => {
+    setImgLink(status.img);
+    setFile(null);
     setOpenEdit(true);
   };
 
@@ -309,7 +351,30 @@ export default function Post({ post, delete_post }) {
 
   const Edit_post = (e) => {
     submitEditHandler(e);
-    setAnchorEl(null);
+  };
+  const uploadFiles = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!file) resolve("");
+      const storageRef = ref(storage, `/files/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const prog = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+        },
+        (err) => {
+          console.log(err);
+          reject();
+        },
+        async () => {
+          await getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            resolve(url);
+          });
+        }
+      );
+    });
   };
 
   const Delete_post = async (e) => {
@@ -318,10 +383,14 @@ export default function Post({ post, delete_post }) {
   };
   const submitEditHandler = async (e) => {
     e.preventDefault();
+
     try {
+      setProgress(true);
+      const link = await uploadFiles(file);
       const newPost = {
         userId: user._id,
         desc: desc.current.value,
+        img: link,
         video: videoLink.current.value,
       };
       await axios.put(`/posts/${status._id}`, newPost, {
@@ -332,8 +401,10 @@ export default function Post({ post, delete_post }) {
       });
 
       setStatus(res.data);
+      setProgress(false);
+      setAnchorEl(null);
     } catch (err) {
-      console.log(err);
+      console.log("err");
     }
   };
   const handleShowCmt = (e) => {
@@ -355,7 +426,7 @@ export default function Post({ post, delete_post }) {
               className={classes.avatar}
             />
 
-            <Link to={`/profile/${userPost._id}`}>
+            <Link to={`/profile/${userPost.username}`}>
               <Typography variant="body1" className={classes.postUsername}>
                 {userPost.name}
               </Typography>
@@ -417,6 +488,7 @@ export default function Post({ post, delete_post }) {
                     </DialogActions>
                   </Dialog>
                 </div>
+                {/* Sửa bài viết */}
                 <div className={classes.menuItem}>
                   <MenuItem onClick={handleOpenEdit}>Sửa bài viết</MenuItem>
                   <Dialog
@@ -438,12 +510,55 @@ export default function Post({ post, delete_post }) {
                           className={classes.textArea}
                           ref={desc}
                         />
-
-                        <img
-                          src={status.img}
-                          alt=""
-                          className={classes.postImg}
-                        />
+                        {imgLink ? (
+                          <div className={classes.shareImgContainer}>
+                            <img
+                              className={classes.shareImg}
+                              src={imgLink}
+                              alt=""
+                            />
+                            <CloseIcon
+                              className={classes.shareCancelImg}
+                              onClick={() => setImgLink("")}
+                            />
+                          </div>
+                        ) : (
+                          <label
+                            htmlFor="edit_img"
+                            className={classes.shareOption}
+                          >
+                            <PermMediaIcon
+                              htmlColor="green"
+                              className={classes.shareIcon}
+                            />
+                            <Typography
+                              variant="body1"
+                              className={classes.shareOptionText}
+                            >
+                              Image
+                            </Typography>
+                            <input
+                              type="file"
+                              id="edit_img"
+                              accept=".png,.jpeg,.jpg"
+                              onChange={(e) => setFile(e.target.files[0])}
+                              style={{ display: "none" }}
+                            />
+                          </label>
+                        )}
+                        {file && (
+                          <div className={classes.shareImgContainer}>
+                            <img
+                              className={classes.shareImg}
+                              src={URL.createObjectURL(file)}
+                              alt=""
+                            />
+                            <CloseIcon
+                              className={classes.shareCancelImg}
+                              onClick={() => setFile(null)}
+                            />
+                          </div>
+                        )}
                         <input
                           placeholder="Link video"
                           type="text"
@@ -461,7 +576,11 @@ export default function Post({ post, delete_post }) {
                         onClick={(e) => Edit_post(e)}
                         className={classes.deleteBtn}
                       >
-                        Xác nhận
+                        {progress ? (
+                          <CircularProgress color="inherit" />
+                        ) : (
+                          "Đăng bài"
+                        )}
                       </Button>
                     </DialogActions>
                   </Dialog>
@@ -479,7 +598,7 @@ export default function Post({ post, delete_post }) {
             className={classes.textAreaDisable}
             disabled
           />
-          {/* <Typography>{status.desc}</Typography> */}
+
           {!status.video && status.img && (
             <img src={status.img} alt="" className={classes.postImg} />
           )}

@@ -147,7 +147,7 @@ export default function Share({ addPost }) {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(file);
+
     try {
       setProgress(true);
       const link = await uploadFiles(file);

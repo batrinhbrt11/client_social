@@ -68,7 +68,7 @@ export default function Drawer() {
         onOpen={() => {}}
       >
         <div className={classes.list}>
-          <Link to={`/profile/${user._id}`}>
+          <Link to={`/profile/${user.username}`}>
             <Box textAlign="center" p={2} className={classes.title}>
               <Avatar
                 alt=""

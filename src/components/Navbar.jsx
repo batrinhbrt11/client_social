@@ -13,7 +13,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import React, { useContext, useState, useRef, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { Cancel, NightsStay } from "@material-ui/icons";
+import { Block, Cancel, NightsStay } from "@material-ui/icons";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Drawer from "./Drawer";
 import { Link, useParams } from "react-router-dom";
@@ -26,9 +26,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import "../css/ProfileRight.css";
-import io from "socket.io-client"
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import io from "socket.io-client";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { display } from "@mui/system";
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     borderRadius: theme.shape.borderRadius,
-    width: "50%",
+    width: "100%",
     [theme.breakpoints.up("sm")]: {
       display: "flex !important",
     },
@@ -115,6 +116,42 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px",
     textAlign: "center",
   },
+  link: {
+    "&:hover": {
+      color: "white",
+    },
+  },
+  searchContainer: {
+    width: "30%",
+    position: "relative",
+  },
+  listContainer: {
+    width: "100%",
+    display: "block",
+    background: "white",
+    color: "black",
+    position: "absolute",
+    boxShadow:
+      " rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+    "& ul": {
+      paddingLeft: "0 !important",
+    },
+    "& li": {
+      marginLeft: "10px",
+      marginRight: "10px",
+      marginTop: "10px",
+      display: "flex",
+      padding: "10px",
+      fontSize: "1.25rem",
+      gap: "10px",
+      fontWeight: "bold",
+      color: "black",
+      "&:hover": {
+        backgroundColor: "#eeeeee",
+        borderRadius: "16px",
+      },
+    },
+  },
 }));
 
 export default function Navbar() {
@@ -123,36 +160,52 @@ export default function Navbar() {
   const { token, user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  //Socket thông báo 
+  const [listUser, setListUser] = useState([]);
+  //Socket thông báo
   const [socket, setSocket] = useState(null);
   const [message, setMessage] = React.useState("");
   const [openNotifiAlert, setOpenNotifiAlert] = React.useState(false);
+
+  const [searchText, setSearchText] = useState("");
   const setupSocket = () => {
-    if(!socket && token && user){
+    if (!socket && token && user) {
       const newSocket = io("http://localhost:5000", {
-        query: { token }, transports : ['websocket']
-      })
+        query: { token },
+        transports: ["websocket"],
+      });
       newSocket.on("connect", () => {
         console.log("Connected");
-      })
+      });
       newSocket.on("disconect", () => {
         setSocket(null);
-      })
+      });
       setSocket(newSocket);
     }
-  }
-  useEffect(() => {
-    setupSocket()
-  },[])
+  };
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get("/users", {
+        headers: { "x-access-token": token },
+      });
+      const data = res.data;
+      setListUser(data);
+    } catch (err) {
+      console.log("Requet cancel", err.message);
+    }
+  };
 
   useEffect(() => {
-    if(socket){
+    setupSocket();
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
       socket.on("newNotification", (msg) => {
         setMessage(msg);
         console.log(msg);
         setOpenNotifiAlert(true);
-      })
+      });
     }
   });
 
@@ -233,8 +286,12 @@ export default function Navbar() {
       <AppBar position="fixed">
         <Toolbar className={classes.toolbar}>
           <Link to="/" className={classes.logoLg}>
-            <Typography variant="h6" onClick={handleTop}>
-              META
+            <Typography
+              variant="h6"
+              onClick={handleTop}
+              className={classes.link}
+            >
+              SSM
             </Typography>
           </Link>
           <div className={classes.logoSm}>
@@ -245,19 +302,54 @@ export default function Navbar() {
               </Typography>
             </Link>
           </div>
-
-          <div className={classes.search}>
-            <SearchIcon />
-            <InputBase placeholder="Tìm kiếm...." className={classes.input} />
-            <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
+          <div className={classes.searchContainer}>
+            <div className={classes.search}>
+              <SearchIcon />
+              <InputBase
+                placeholder="Tìm kiếm...."
+                className={classes.input}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+              <Cancel
+                className={classes.cancel}
+                onClick={() => setOpen(false)}
+              />
+            </div>
+            {searchText !== "" && (
+              <div className={classes.listContainer}>
+                <ul>
+                  {listUser
+                    .filter((user) =>
+                      user.name.toLowerCase().includes(searchText.toLowerCase())
+                    )
+                    .map((user) => (
+                      <Link key={user._id} to={`/profile/${user.username}`}>
+                        <li>
+                          <Avatar
+                            alt=""
+                            src={
+                              user.profilePicture
+                                ? user.profilePicture
+                                : PF + "person/noAvartar.jpg"
+                            }
+                            className={classes.image}
+                          />
+                          <span>{user.name}</span>
+                        </li>
+                      </Link>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
+
           <div className={classes.icons}>
             <SearchIcon
               className={classes.searchButton}
               onClick={() => setOpen(true)}
             />
 
-            <Link to={`/profile/${user._id}`}>
+            <Link to={`/profile/${user.username}`}>
               <Avatar
                 alt=""
                 src={
@@ -364,15 +456,34 @@ export default function Navbar() {
           </Dialog>
         </Toolbar>
       </AppBar>
-      <Snackbar open={openNotifiAlert} autoHideDuration={6000} onClose={() => {setOpenNotifiAlert(false)}}>
-      <a href={message.url}><Alert onClose={() => {setOpenNotifiAlert(false)}} severity="success" sx={{ width: '100%' }}>
-          {message.name} vừa đăng thông báo "{message.title}"
-        </Alert></a>
+      <Snackbar
+        open={openNotifiAlert}
+        autoHideDuration={6000}
+        onClose={() => {
+          setOpenNotifiAlert(false);
+        }}
+      >
+        <a href={message.url}>
+          <Alert
+            onClose={() => {
+              setOpenNotifiAlert(false);
+            }}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {message.name} vừa đăng thông báo "{message.title}"
+          </Alert>
+        </a>
       </Snackbar>
-      {message ? 
-      (<a href={message.url}><Alert severity="success">
-        {message.name} vừa đăng thông báo "{message.title}"
-        </Alert></a>) : (<></>)}
+      {message ? (
+        <a href={message.url}>
+          <Alert severity="success">
+            {message.name} vừa đăng thông báo "{message.title}"
+          </Alert>
+        </a>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

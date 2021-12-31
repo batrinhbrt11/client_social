@@ -54,7 +54,7 @@ export default function NotificationDetail() {
   const classes = useStyles();
   const { token } = useContext(AuthContext);
   const [noti, setNoti] = useState({});
-  const [cate, setCate] = useState("");
+  const [cate, setCate] = useState({});
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
   const idNoti = useParams().id;
@@ -65,7 +65,7 @@ export default function NotificationDetail() {
       });
       const data = await res.data;
       setNoti(data.notifications);
-      setCate(data.cateName);
+      setCate(data.cate);
       setContent(parse(data.notifications.content));
       setDate(data.notifications.createdAt.slice(0, 10));
     } catch (err) {
@@ -91,7 +91,8 @@ export default function NotificationDetail() {
           </div>
           <div>
             <h5 className={classes.subtitle}>
-              {cate} || {date}
+              <Link to={`/notification/${cate.slug}`}>{cate.name} </Link>||
+              {date}
             </h5>
           </div>
           <div>

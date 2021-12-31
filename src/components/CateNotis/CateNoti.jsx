@@ -33,7 +33,7 @@ export default function CateNoti() {
         <h3 className="noti-faculty">Phân loại theo khoa</h3>
         <div className="grid-container">
           {faculties.map((noti) => (
-            <Link to={`/notification/${noti.slug}`}>
+            <Link key={noti._id} to={`/notification/${noti.slug}`}>
               <div className="grid-item">
                 <img
                   src="https://old-stdportal.tdtu.edu.vn/Content/images/image.png"
@@ -54,7 +54,7 @@ export default function CateNoti() {
         <h3 className="noti-category">Phân loại theo danh mục</h3>
         <div className="grid-container">
           {categories.map((noti) => (
-            <Link to={`/notification/${noti.slug}`}>
+            <Link key={noti._id} to={`/notification/${noti.slug}`}>
               <div className="grid-item">
                 <img
                   src="https://old-stdportal.tdtu.edu.vn/Content/images/image.png"

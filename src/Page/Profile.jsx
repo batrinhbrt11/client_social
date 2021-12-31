@@ -51,12 +51,12 @@ export default function Profile() {
   const { token } = useContext(AuthContext);
 
   const [user, setUser] = useState({});
-  const id = useParams().id;
+  const username = useParams().username;
   const [error, setError] = useState(false);
   useEffect(() => {
     try {
       const fetchUser = async () => {
-        const res = await axios.get(`/users/${id}`, {
+        const res = await axios.get(`/users/profile/${username}`, {
           headers: { "x-access-token": token },
         });
         setUser(res.data);
@@ -65,7 +65,7 @@ export default function Profile() {
     } catch (err) {
       console.log(err);
     }
-  }, [id]);
+  }, [username]);
 
   const isEmpty = (obj) => {
     for (var key in obj) {
@@ -97,7 +97,7 @@ export default function Profile() {
                   />
                 </div>
                 <div className={classes.profileLeft}>
-                  <Feed userId={id} />
+                  <Feed userId={user._id} />
                 </div>
               </div>
             </div>

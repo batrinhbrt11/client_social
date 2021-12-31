@@ -9,48 +9,58 @@ import Dashboard from "./Page/Dashboard";
 import { AuthContext } from "./Context/AuthContext";
 import Falcuty from "./Page/Falcuty";
 import AddNotification from "./Page/AddNotification";
+import NotificationDetail from "./Page/NotificationDetail";
+import ListNotification from "./Page/ListNotification";
 function App() {
   const { token, user } = useContext(AuthContext);
-  
+
   return (
     <>
-    <div> 
-      <BrowserRouter>
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={token && user ? <Home /> : <Login/>}
-          />
-          <Route
-            path="/profile/:id"
-            element={token && user ? <Profile /> : <Login/>}
-          />
-          <Route
-            path="/login"
-            element={token && user ? <Navigate to="/" /> : <Login/>}
-          />
-          <Route
-            path="/notification"
-            element={token && user ? <Notification /> : <Login/>}
-          />
-          <Route
-            path="/dashboard"
-            element={token && user ? <Dashboard /> : <Login/>}
-          />
-          <Route
-            exact
-            path="/falcuty"
-            element={token && user ? <Falcuty /> : <Login/>}
-          />
-          <Route
-            exact
-            path="/falcuty/notification/add"
-            element={token && user ? <AddNotification /> : <Login />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </div>
+      <div>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={token && user ? <Home /> : <Login />}
+            />
+            <Route
+              path="/profile/:username"
+              element={token && user ? <Profile /> : <Login />}
+            />
+            <Route
+              path="/login"
+              element={token && user ? <Navigate to="/" /> : <Login />}
+            />
+            <Route
+              path="/notification"
+              element={token && user ? <Notification /> : <Login />}
+            />
+            <Route
+              path="/notification/:slug"
+              element={token && user ? <ListNotification /> : <Login />}
+            />
+            <Route
+              path="/notification/noti/:id"
+              element={token && user ? <NotificationDetail /> : <Login />}
+            />
+            <Route
+              path="/dashboard"
+              element={token && user ? <Dashboard /> : <Login />}
+            />
+            <Route
+              exact
+              path="/falcuty"
+              element={token && user ? <Falcuty /> : <Login />}
+            />
+            <Route
+              exact
+              path="/falcuty/notification/add"
+              element={token && user ? <AddNotification /> : <Login />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </>
   );
 }

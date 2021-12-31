@@ -65,14 +65,14 @@ export default function Home({ socket }) {
             severity="success"
             sx={{ width: "100%" }}
           >
-            {message.cateName} vừa đăng thông báo "{message.title}"
+            {message.name} vừa đăng thông báo "{message.title}"
           </Alert>
         </a>
       </Snackbar>
       {message ? (
         <a href={message.url}>
           <Alert severity="success">
-            {message.cateName} vừa đăng thông báo "{message.title}"
+            {message.name} vừa đăng thông báo "{message.title}"
           </Alert>
         </a>
       ) : (

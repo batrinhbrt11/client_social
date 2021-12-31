@@ -83,7 +83,7 @@ export default function Leftbar() {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <Container className={classes.container}>
-      <Link to={`/profile/${user._id}`}>
+      <Link to={`/profile/${user.username}`}>
         <Box textAlign="center" p={2} className={classes.title}>
           <Avatar
             alt=""

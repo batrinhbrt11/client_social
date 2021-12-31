@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { InputBase } from "@material-ui/core";
 import "./ListNotis.css";
@@ -20,6 +20,8 @@ export default function ListNotis() {
   const [notifications, setNotifications] = useState([]);
   const [cateName, setCateName] = useState("");
   const [pages, setPages] = useState("");
+  const [searchText, setSearchText] = useState("");
+
   const fetchNotifications = async (page) => {
     try {
       const res = await axios.get(`/notifications/cate/${slug}?page=${page}`, {
@@ -32,10 +34,11 @@ export default function ListNotis() {
       console.log(err);
     }
   };
+
   useEffect(() => {
     fetchNotifications(page);
   }, [slug, page]);
-  var str = "this is content this is content this is content ";
+
   return (
     <div>
       <div className="category-name blue ">
@@ -48,14 +51,9 @@ export default function ListNotis() {
       </div>
 
       <div className="ListContainer">
-        <div className="search-container">
-          <SearchIcon className="search-icon" />
-          <InputBase placeholder="Tìm kiếm...." className="search-input" />
-        </div>
-
         <ul className="list-container">
           {notifications.map((noti) => (
-            <li className="item-notification">
+            <li key={noti._id} className="item-notification">
               <span className="title">{noti.title}</span>
               <div className="content">{parse(noti.content)}</div>
               <div className="notification-footer">
