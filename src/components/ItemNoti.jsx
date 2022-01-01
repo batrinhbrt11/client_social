@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function ItemNoti({ noti }) {
   const classes = useStyles();
-  const [cate, setCate] = useState("");
+  const [cate, setCate] = useState({});
   const getCateName = async (id) => {
     const cate = await axios.get(`/admin/categories/${id}`);
 

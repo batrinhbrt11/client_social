@@ -2,6 +2,11 @@ import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import "./CateNoti.css";
 import { Link } from "react-router-dom";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 export default function CateNoti() {
   const [notis, setNotis] = useState([]);
   const [faculties, setFaculties] = useState([]);
@@ -29,48 +34,46 @@ export default function CateNoti() {
 
   return (
     <div>
-      <div className="container">
-        <h3 className="noti-faculty">Phân loại theo khoa</h3>
-        <div className="grid-container">
-          {faculties.map((noti) => (
-            <Link key={noti._id} to={`/notification/${noti.slug}`}>
-              <div className="grid-item">
-                <img
-                  src="https://old-stdportal.tdtu.edu.vn/Content/images/image.png"
-                  className="item-img"
-                />
-                <div>
-                  <div className="item-inner"></div>
-                  <div className="item-footer">
-                    <h5>{noti.name.toUpperCase()} </h5>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="container">
-        <h3 className="noti-category">Phân loại theo danh mục</h3>
-        <div className="grid-container">
-          {categories.map((noti) => (
-            <Link key={noti._id} to={`/notification/${noti.slug}`}>
-              <div className="grid-item">
-                <img
-                  src="https://old-stdportal.tdtu.edu.vn/Content/images/image.png"
-                  className="item-img"
-                />
-                <div>
-                  <div className="item-inner"></div>
-                  <div className="item-footer">
-                    <h5>{noti.name.toUpperCase()} </h5>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Khoa</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ul className="cateItemsList">
+            {faculties.map((cate) => (
+              <li key={cate._id} className="cateItem">
+                <Link to={`/notification/${cate.slug}`}>
+                  <Typography className="cateName">{cate.name}</Typography>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>Chuyên mục</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ul className="cateItemsList">
+            {categories.map((cate) => (
+              <li key={cate._id} className="cateItem">
+                <Link to={`/notification/${cate.slug}`}>
+                  <Typography className="cateName">{cate.name}</Typography>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 }

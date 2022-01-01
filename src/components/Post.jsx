@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(2),
     borderRadius: "10px",
+    border: "1px solid #f1f1f1",
     "-webkit-box-shadow": "0px 0px 16px -8px rgba(0, 0, 0, 0.68)",
     boxShadow: " 0px 0px 16px -8px rgba(0, 0, 0, 0.68)",
     [theme.breakpoints.down("sm")]: {

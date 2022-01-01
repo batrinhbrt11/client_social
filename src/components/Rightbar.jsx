@@ -51,6 +51,15 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     fontWeight: "600",
   },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    "& a": {
+      fontStyle: "italic",
+      fontSize: "0.75rem",
+    },
+  },
 }));
 
 export default function Rightbar() {
@@ -76,7 +85,11 @@ export default function Rightbar() {
   return (
     <Container className={classes.container}>
       <div className={classes.rightBarWrapper}>
-        <Typography variant="h6">Thông báo</Typography>
+        <div className={classes.headerContainer}>
+          <Typography variant="h6">Thông báo</Typography>
+          <Link to="/notification">Xem tất cả</Link>
+        </div>
+
         <ul className={classes.rightbarList}>
           {newNotification.map((noti) => (
             <li key={noti._id} className={classes.rightBarNoti}>
