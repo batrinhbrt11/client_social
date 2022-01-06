@@ -8,7 +8,7 @@ import Rightbar from "../components/Rightbar";
 import Navbar from "../components/Navbar";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   right: {
     [theme.breakpoints.between("xs", "sm")]: {
@@ -28,7 +28,7 @@ export default function Home({ socket }) {
     if (socket) {
       socket.on("newNotification", (msg) => {
         setMessage(msg);
-        console.log(msg);
+        console.log(message);
         setOpen(true);
       });
     }
@@ -57,7 +57,7 @@ export default function Home({ socket }) {
           setOpen(false);
         }}
       >
-        <a href={message.url}>
+        <Link to={message.url}>
           <Alert
             onClose={() => {
               setOpen(false);
@@ -67,14 +67,14 @@ export default function Home({ socket }) {
           >
             {message.name} vừa đăng thông báo "{message.title}"
           </Alert>
-        </a>
+        </Link>
       </Snackbar>
       {message ? (
-        <a href={message.url}>
+        <Link to={message.url}>
           <Alert severity="success">
             {message.name} vừa đăng thông báo "{message.title}"
           </Alert>
-        </a>
+        </Link>
       ) : (
         <></>
       )}
