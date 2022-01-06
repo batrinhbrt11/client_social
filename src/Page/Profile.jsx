@@ -54,17 +54,17 @@ export default function Profile() {
   const username = useParams().username;
   const [error, setError] = useState(false);
   useEffect(() => {
-    try {
-      const fetchUser = async () => {
+    const fetchUser = async () => {
+      try {
         const res = await axios.get(`/users/profile/${username}`, {
           headers: { "x-access-token": token },
         });
         setUser(res.data);
-      };
-      fetchUser();
-    } catch (err) {
-      console.log(err);
-    }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUser();
   }, [username]);
 
   const isEmpty = (obj) => {

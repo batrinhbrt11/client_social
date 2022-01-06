@@ -229,9 +229,12 @@ export default function ProfileImage({ user, changeUser }) {
           src={user.coverPicture ? user.coverPicture : PF + "person/cover.png"}
           alt=""
         />
-        <Button className={classes.btn_Cover} onClick={handleOpenCover}>
-          Sửa Ảnh bìa
-        </Button>
+        {currentUser._id === user._id && (
+          <Button className={classes.btn_Cover} onClick={handleOpenCover}>
+            Sửa Ảnh bìa
+          </Button>
+        )}
+
         <Avatar
           className={classes.profileUserImg}
           alt=""
@@ -241,9 +244,11 @@ export default function ProfileImage({ user, changeUser }) {
               : PF + "person/noAvartar.jpg"
           }
         />
-        <Button className={classes.btn_Avatar} onClick={handleOpenAvt}>
-          <PhotoCameraIcon />
-        </Button>
+        {currentUser._id === user._id && (
+          <Button className={classes.btn_Avatar} onClick={handleOpenAvt}>
+            <PhotoCameraIcon />
+          </Button>
+        )}
       </div>
       <div className={classes.profileInfo}>
         <h4 className={classes.profileInfoName}>{user.name}</h4>
