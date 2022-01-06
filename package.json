@@ -61,5 +61,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000/api/"
+  "proxy": "https://social-social-media.herokuapp.com/api/"
 }
