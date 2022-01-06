@@ -91,6 +91,7 @@ export default function MangeUser() {
 
   const handleClose = () => {
     setOpen(false);
+    setValue([]);
   };
   //end edit dialog
   //end edit dialog
@@ -140,7 +141,7 @@ export default function MangeUser() {
     const res = await axios.get("/users", {
       headers: { "x-access-token": token },
     });
-    setRows(res.data);
+    setRows(res.data.filter((d) => d.authorize === 2));
     setSuccess("Sửa Khoa thành công");
     handleClose();
   };
@@ -164,7 +165,7 @@ export default function MangeUser() {
 
     await axios(config)
       .then(function (res) {
-        setRows(res.data);
+        setRows(res.data.filter((d) => d.authorize === 2));
         handleClose();
         setSuccess("Xóa Khoa thành công");
       })
@@ -206,8 +207,9 @@ export default function MangeUser() {
         const res = await axios.get("/users", {
           headers: { "x-access-token": token },
         });
-        setRows(res.data);
+        setRows(res.data.filter((d) => d.authorize === 2));
         handleClose();
+
         setSuccess("Thêm Khoa thành công");
       }
     } catch (err) {

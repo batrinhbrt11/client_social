@@ -19,7 +19,7 @@ export default function CateNoti() {
         setNotis(data);
         let arr = [];
         data.map((noti) => {
-          if (noti.name.toUpperCase().includes("KHOA")) {
+          if (noti.name.toUpperCase().slice(0, 4).includes("KHOA")) {
             arr.push(noti);
           }
         });

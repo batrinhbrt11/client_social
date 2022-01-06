@@ -55,7 +55,7 @@ export default function Dashboard() {
                       onChange={handleChange}
                       aria-label="lab API tabs example"
                     >
-                      <Tab label="Người dùng" value="1" />
+                      <Tab label="Khoa" value="1" />
 
                       <Tab label="Danh mục" value="2" />
                     </TabList>
