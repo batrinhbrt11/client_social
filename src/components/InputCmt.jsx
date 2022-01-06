@@ -66,15 +66,7 @@ export default function InputCmt({ idPost, addCmts }) {
 
   return (
     <div className={classes.inputContainer}>
-      <Avatar
-        alt=""
-        src={
-          user.profilePicture
-            ? user.profilePicture
-            : PF + "person/noAvartar.jpg"
-        }
-        className={classes.image}
-      />
+      <Avatar alt="" src={user.profilePicture} className={classes.image} />
 
       <form className={classes.form_cmt}>
         <input

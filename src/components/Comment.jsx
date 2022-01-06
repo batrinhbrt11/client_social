@@ -154,15 +154,7 @@ export default function Comment({ cmt, deleteComment }) {
   return (
     <div className={classes.cmt_container}>
       <Link to="/">
-        <Avatar
-          alt=""
-          src={
-            userCmt.profilePicture
-              ? userCmt.profilePicture
-              : PF + "person/noAvartar.jpg"
-          }
-          className={classes.image}
-        />
+        <Avatar alt="" src={userCmt.profilePicture} className={classes.image} />
       </Link>
       {onEdit ? (
         <form className={classes.form_cmt}>

@@ -192,15 +192,7 @@ export default function Share({ addPost }) {
     <Container className={classes.share}>
       <div className={classes.shareWrapper}>
         <div className={classes.shareTop}>
-          <Avatar
-            alt=""
-            src={
-              user.profilePicture
-                ? user.profilePicture
-                : PF + "person/noAvartar.jpg"
-            }
-            className={classes.image}
-          />
+          <Avatar alt="" src={user.profilePicture} className={classes.image} />
 
           <TextareaAutosize
             placeholder={"What's new, " + user.name + "?"}

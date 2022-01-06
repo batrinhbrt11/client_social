@@ -419,11 +419,7 @@ export default function Post({ post, delete_post }) {
           <div className={classes.postTopLeft}>
             <Avatar
               alt=""
-              src={
-                userPost.profilePicture
-                  ? userPost.profilePicture
-                  : PF + "person/noAvartar.jpg"
-              }
+              src={userPost.profilePicture}
               className={classes.avatar}
             />
 

@@ -226,7 +226,11 @@ export default function ProfileImage({ user, changeUser }) {
       <div className={classes.profileCover}>
         <img
           className={classes.profileCoverImg}
-          src={user.coverPicture ? user.coverPicture : PF + "person/cover.png"}
+          src={
+            user.coverPicture
+              ? user.coverPicture
+              : "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Grey_background.jpg/1200px-Grey_background.jpg"
+          }
           alt=""
         />
         {currentUser._id === user._id && (
@@ -238,11 +242,7 @@ export default function ProfileImage({ user, changeUser }) {
         <Avatar
           className={classes.profileUserImg}
           alt=""
-          src={
-            user.profilePicture
-              ? user.profilePicture
-              : PF + "person/noAvartar.jpg"
-          }
+          src={user.profilePicture ? user.profilePicture : user.profilePicture}
         />
         {currentUser._id === user._id && (
           <Button className={classes.btn_Avatar} onClick={handleOpenAvt}>

@@ -141,7 +141,7 @@ export default function ProfileRight({ user, changeUser }) {
           {followed ? <PersonRemoveIcon /> : <PersonAddAlt1Icon />}
         </button>
       )}
-      {user.authorize !== 2 && (
+      {user.authorize === 3 && (
         <div className="rightbarInfoContainer">
           <h4 className="rightbarTitle">
             Thông tin

@@ -72,11 +72,7 @@ export default function Drawer() {
             <Box textAlign="center" p={2} className={classes.title}>
               <Avatar
                 alt=""
-                src={
-                  user.profilePicture
-                    ? user.profilePicture
-                    : PF + "person/noAvartar.jpg"
-                }
+                src={user.profilePicture}
                 className={classes.image}
               />
               <span className={classes.title_text}>{user.name}</span>

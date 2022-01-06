@@ -352,11 +352,7 @@ export default function Navbar() {
             <Link to={`/profile/${user.username}`}>
               <Avatar
                 alt=""
-                src={
-                  user.profilePicture
-                    ? user.profilePicture
-                    : PF + "person/noAvartar.jpg"
-                }
+                src={user.profilePicture}
                 className={classes.image}
               />
             </Link>

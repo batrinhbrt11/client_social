@@ -85,15 +85,7 @@ export default function Leftbar() {
     <Container className={classes.container}>
       <Link to={`/profile/${user.username}`}>
         <Box textAlign="center" p={2} className={classes.title}>
-          <Avatar
-            alt=""
-            src={
-              user.profilePicture
-                ? user.profilePicture
-                : PF + "person/noAvartar.jpg"
-            }
-            className={classes.image}
-          />
+          <Avatar alt="" src={user.profilePicture} className={classes.image} />
           <span className={classes.title_text}>{user.name}</span>
         </Box>
       </Link>
