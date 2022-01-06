@@ -106,14 +106,7 @@ export default function Leftbar() {
           </Typography>
         </div>
       </Link>
-      <Link to="/">
-        <div className={classes.item}>
-          <PeopleAltIcon className={classes.icon} />
-          <Typography variant="body1" className={classes.text}>
-            Bạn bè
-          </Typography>
-        </div>
-      </Link>
+
       <Link to="/notification">
         <div className={classes.item}>
           <ListIcon className={classes.icon} />

@@ -102,23 +102,7 @@ export default function Drawer() {
                 />
               </ListItem>
             </Link>
-            <Link to="/">
-              <ListItem className={classes.listItem}>
-                <ListItemIcon>
-                  <PeopleAltIcon className={classes.icon} />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="body1"
-                      className={classes.listItemText}
-                    >
-                      Bạn bè
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            </Link>
+
             <Link to="/notification">
               <ListItem className={classes.listItem}>
                 <ListItemIcon>

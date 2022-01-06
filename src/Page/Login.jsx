@@ -19,7 +19,7 @@ export default function Login() {
     loginCall(
       { username: username.current.value, password: password.current.value },
       dispatch
-    )
+    );
   };
   const responseGoogle = async (response) => {
     if (
@@ -135,7 +135,6 @@ export default function Login() {
                   "Đăng nhập"
                 )}
               </button>
-              <span className="loginForgot">Quên mật khẩu</span>
 
               <GoogleLogin
                 className="googleButton"
