@@ -18,7 +18,7 @@ export default function ItemListNotification({ noti, category }) {
       <span className="title">{noti.title}</span>
       <div className="content">{parse(noti.content)}</div>
       <div className="notification-footer">
-        <Link to={`/notification/noti/${noti._id}`}>Chi tiết thông báo</Link>
+        <Link to={`/notification/noti/${noti.slug}`}>Chi tiết thông báo</Link>
         <div className="footer_info">
           {category && (
             <Link className="category_link" to={`/notification/${cate.slug}`}>

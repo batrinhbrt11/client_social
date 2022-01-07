@@ -94,7 +94,7 @@ export default function Rightbar() {
         <ul className={classes.rightbarList}>
           {newNotification.map((noti) => (
             <li key={noti._id} className={classes.rightBarNoti}>
-              <Link to={`/notification/noti/${noti._id}`}>
+              <Link to={`/notification/noti/${noti.slug}`}>
                 <ItemNoti key={noti._id} noti={noti} />
               </Link>
             </li>

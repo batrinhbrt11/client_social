@@ -55,7 +55,7 @@ function Noti() {
   const { token } = useContext(AuthContext);
   const [noti, setNoti] = useState({});
   const [cate, setCate] = useState("");
-  const idNoti = useParams().id;
+  const slug = useParams().slug;
   const URL = process.env.API_URL;
   const fecthNoti = async () => {
     try {

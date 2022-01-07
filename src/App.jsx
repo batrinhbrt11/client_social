@@ -41,7 +41,7 @@ function App() {
               element={token && user ? <ListNotification /> : <Login />}
             />
             <Route
-              path="/notification/noti/:id"
+              path="/notification/noti/:slug"
               element={token && user ? <NotificationDetail /> : <Login />}
             />
             <Route

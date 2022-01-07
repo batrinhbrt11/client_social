@@ -57,11 +57,12 @@ export default function NotificationDetail() {
   const [cate, setCate] = useState({});
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
-  const idNoti = useParams().id;
+  const slugNoti = useParams().slug;
+
   const URL = process.env.REACT_APP_API_URL;
   const fecthNoti = async () => {
     try {
-      const res = await axios.get(`${URL}/api/notifications/${idNoti}`, {
+      const res = await axios.get(`${URL}/api/notifications/${slugNoti}`, {
         headers: { Authorization: "Bearer " + token },
       });
       const data = await res.data;
@@ -75,7 +76,8 @@ export default function NotificationDetail() {
   };
   useEffect(() => {
     fecthNoti();
-  }, [idNoti]);
+    console.log(noti);
+  }, [slugNoti]);
   return (
     <>
       <Navbar />
