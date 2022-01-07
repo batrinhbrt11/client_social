@@ -386,11 +386,17 @@ export default function Post({ post, delete_post }) {
 
     try {
       setProgress(true);
+      let link_img;
       const link = await uploadFiles(file);
+      if (link === "") {
+        link_img = imgLink;
+      } else {
+        link_img = link;
+      }
       const newPost = {
         userId: user._id,
         desc: desc.current.value,
-        img: link,
+        img: link_img,
         video: videoLink.current.value,
       };
       await axios.put(`${URL_API}/api/posts/${status._id}`, newPost, {
