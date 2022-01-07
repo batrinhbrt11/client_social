@@ -76,7 +76,7 @@ export default function Comment({ cmt, deleteComment }) {
   const classes = useStyles();
   const [readMore, setReadMore] = useState(false);
   const { user, token } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open_menu = Boolean(anchorEl);
   const [onEdit, setOnEdit] = useState(false);
@@ -95,11 +95,12 @@ export default function Comment({ cmt, deleteComment }) {
 
     setAnchorEl(null);
   };
+  const URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const ourRequest = axios.CancelToken.source(); //1st step
     const fetchUser = async () => {
       const res = await axios.get(
-        `/users/${cmt.userId}`,
+        `${URL}/api/users/${cmt.userId}`,
         {
           headers: { "x-access-token": token },
         },
@@ -118,7 +119,7 @@ export default function Comment({ cmt, deleteComment }) {
     e.preventDefault();
     var config = {
       method: "delete",
-      url: `/comments/${cmt._id}`,
+      url: `${URL}/api/comments/${cmt._id}`,
       headers: {
         "x-access-token": token,
       },
@@ -142,7 +143,7 @@ export default function Comment({ cmt, deleteComment }) {
         userId: user._id,
         content: desc.current.value,
       };
-      await axios.put(`/comments/${cmt._id}`, newComment, {
+      await axios.put(`${URL}/api/comments/${cmt._id}`, newComment, {
         headers: { "x-access-token": token },
       });
       setContent(desc.current.value);

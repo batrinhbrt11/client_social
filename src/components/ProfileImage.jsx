@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function ProfileImage({ user, changeUser }) {
   const classes = useStyles();
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const URL_API = process.env.REACT_APP_API_URL;
   const { token, user: currentUser, dispatch } = useContext(AuthContext);
   // firebase
   const [progress, setProgress] = useState(0);
@@ -172,11 +172,11 @@ export default function ProfileImage({ user, changeUser }) {
         userId: currentUser._id,
         profilePicture: link,
       };
-      await axios.put(`/users/${currentUser._id}`, newAvt, {
+      await axios.put(`${URL_API}/api/users/${currentUser._id}`, newAvt, {
         headers: { "x-access-token": token },
       });
       await dispatch({ type: "EDIT_AVT", payload: newAvt });
-      const res = await axios.get(`/users/${currentUser._id}`, {
+      const res = await axios.get(`${URL_API}/api/users/${currentUser._id}`, {
         headers: { "x-access-token": token },
       });
       changeUser(res.data);
@@ -207,10 +207,10 @@ export default function ProfileImage({ user, changeUser }) {
         userId: currentUser._id,
         coverPicture: link,
       };
-      await axios.put(`/users/${currentUser._id}`, newCover, {
+      await axios.put(`${URL_API}/api/users/${currentUser._id}`, newCover, {
         headers: { "x-access-token": token },
       });
-      const res = await axios.get(`/users/${currentUser._id}`, {
+      const res = await axios.get(`${URL_API}/api/users/${currentUser._id}`, {
         headers: { "x-access-token": token },
       });
       changeUser(res.data);

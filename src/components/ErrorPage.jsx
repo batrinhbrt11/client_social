@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function ErrorPage({ string }) {
   const classes = useStyles();
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   return (
     <div className={classes.contentpad}>
       <h1>{string}</h1>

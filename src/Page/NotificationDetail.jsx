@@ -58,9 +58,10 @@ export default function NotificationDetail() {
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
   const idNoti = useParams().id;
+  const URL = process.env.REACT_APP_API_URL;
   const fecthNoti = async () => {
     try {
-      const res = await axios.get(`/notifications/${idNoti}`, {
+      const res = await axios.get(`${URL}/api/notifications/${idNoti}`, {
         headers: { Authorization: "Bearer " + token },
       });
       const data = await res.data;

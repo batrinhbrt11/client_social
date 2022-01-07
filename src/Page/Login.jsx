@@ -34,10 +34,12 @@ export default function Login() {
       setErrorGoogle("Tài khoản không hợp lệ");
     }
   };
+  const URL = process.env.REACT_APP_API_URL;
 
   const handleClickRegister = async (e) => {
     e.preventDefault();
     const username_gg = google.email.slice(0, 8);
+
     try {
       const newUser = {
         name: google.name,
@@ -48,7 +50,7 @@ export default function Login() {
         password: password.current.value,
       };
 
-      const res = await axios.post("auth/register", newUser);
+      const res = await axios.post(`${URL}/api/auth/register`, newUser);
 
       loginCall(
         {

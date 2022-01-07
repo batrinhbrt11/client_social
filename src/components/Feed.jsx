@@ -15,7 +15,7 @@ export default function Feed({ userId }) {
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const { token, user } = useContext(AuthContext);
-
+  const URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     //clean up useEffect with axios
     const ourRequest = axios.CancelToken.source(); //1st step
@@ -24,7 +24,7 @@ export default function Feed({ userId }) {
       try {
         const res = userId
           ? await axios.get(
-              `/posts/profile/${userId}?page=1`,
+              `${URL}/api/posts/profile/${userId}?page=1`,
               {
                 headers: { "x-access-token": token },
               },
@@ -33,7 +33,7 @@ export default function Feed({ userId }) {
               }
             )
           : await axios.get(
-              `posts/timeline?page=1`,
+              `${URL}/api/posts/timeline?page=1`,
               {
                 headers: { "x-access-token": token },
               },
@@ -69,10 +69,10 @@ export default function Feed({ userId }) {
   const [noMore, setNoMore] = useState(true);
   const fetchPosts2 = async () => {
     const res = userId
-      ? await axios.get(`/posts/profile/${userId}?page=${page}`, {
+      ? await axios.get(`${URL}/api/posts/profile/${userId}?page=${page}`, {
           headers: { "x-access-token": token },
         })
-      : await axios.get(`posts/timeline?page=${page}`, {
+      : await axios.get(`${URL}/api/posts/timeline?page=${page}`, {
           headers: { "x-access-token": token },
         });
     const postData2 = res.data;
@@ -94,7 +94,7 @@ export default function Feed({ userId }) {
       };
 
       await axios.delete(
-        `/posts/${id}`,
+        `${URL}/api/posts/${id}`,
         { data },
         {
           headers: { "x-access-token": token },

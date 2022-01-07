@@ -66,9 +66,10 @@ export default function Rightbar() {
   const classes = useStyles();
   const { token } = useContext(AuthContext);
   const [newNotification, setNewNotification] = useState([]);
+  const URL = process.env.REACT_APP_API_URL;
   const fetchNotification = async () => {
     try {
-      const res = await axios.get("/notifications/?page=10", {
+      const res = await axios.get(`${URL}/api/notifications/?page=10`, {
         headers: { Authorization: "Bearer " + token },
       });
       const data = res.data;

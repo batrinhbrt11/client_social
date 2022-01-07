@@ -38,9 +38,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function InputCmt({ idPost, addCmts }) {
   const classes = useStyles();
-
+  const URL = process.env.REACT_APP_API_URL;
   const { user, token } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   const desc = useRef();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ export default function InputCmt({ idPost, addCmts }) {
       img: "",
     };
     try {
-      await axios.post("/comments/", newCmt, {
+      await axios.post(`${URL}/api/comments/`, newCmt, {
         headers: { "x-access-token": token },
       });
       addCmts(newCmt);

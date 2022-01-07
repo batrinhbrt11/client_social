@@ -64,8 +64,9 @@ const useStyles = makeStyles((theme) => ({
 export default function ItemNoti({ noti }) {
   const classes = useStyles();
   const [cate, setCate] = useState({});
+  const URL = process.env.REACT_APP_API_URL;
   const getCateName = async (id) => {
-    const cate = await axios.get(`/admin/categories/${id}`);
+    const cate = await axios.get(`${URL}/api/admin/categories/${id}`);
 
     setCate(cate.data);
   };
@@ -82,9 +83,7 @@ export default function ItemNoti({ noti }) {
         <Link to={`/notification/${cate.slug}`} className={classes.link}>
           {cate.name}
         </Link>
-        <span className={classes.date}>
-          Ngày đăng: {noti.createdAt.slice(0, 10)}
-        </span>
+        <span className={classes.date}>{noti.createdAt.slice(0, 10)}</span>
       </div>
     </div>
   );

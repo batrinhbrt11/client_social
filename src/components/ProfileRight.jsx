@@ -16,12 +16,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { CircularProgress } from "@mui/material";
 export default function ProfileRight({ user, changeUser }) {
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [friends, setFriends] = useState([]);
   const { token, user: currentUser, dispatch } = useContext(AuthContext);
   const [followed, setFollowed] = useState(
     currentUser.followings.includes(user._id)
   );
+  const URL_API = process.env.REACT_APP_API_URL;
   const [loading, setLoading] = useState(false);
   const editName = useRef();
   const editCity = useRef();
@@ -58,14 +58,14 @@ export default function ProfileRight({ user, changeUser }) {
       };
 
       await axios.put(
-        `/users/${currentUser._id}`,
+        `${URL_API}/api/users/${currentUser._id}`,
 
         newInfo,
         { headers: { "x-access-token": token } }
       );
 
       await dispatch({ type: "EDIT_INFO", payload: newInfo });
-      const res = await axios.get(`/users/${currentUser._id}`, {
+      const res = await axios.get(`${URL_API}/api/users/${currentUser._id}`, {
         headers: { "x-access-token": token },
       });
       changeUser(res.data);
@@ -78,7 +78,7 @@ export default function ProfileRight({ user, changeUser }) {
   const [faculties, setFaculties] = useState([]);
   const fetchFaculty = async () => {
     try {
-      const res = await axios.get("/admin/faculties");
+      const res = await axios.get(`${URL_API}/api/admin/faculties`);
       const data = res.data;
       setFaculties(data);
     } catch (err) {
@@ -88,7 +88,9 @@ export default function ProfileRight({ user, changeUser }) {
   const [userFac, setUserFac] = useState("");
   const getFacName = async () => {
     try {
-      const res = await axios.get(`/admin/faculties/${user.faculty}`);
+      const res = await axios.get(
+        `${URL_API}/api/admin/faculties/${user.faculty}`
+      );
       const data = res.data;
       setUserFac(data);
     } catch (err) {
@@ -100,9 +102,12 @@ export default function ProfileRight({ user, changeUser }) {
     getFacName();
     const getFriends = async () => {
       try {
-        const friendList = await axios.get("/users/friends/" + user._id, {
-          headers: { "x-access-token": token },
-        });
+        const friendList = await axios.get(
+          `${URL_API}/api/users/friends/${user._id}`,
+          {
+            headers: { "x-access-token": token },
+          }
+        );
         setFriends(friendList.data);
       } catch (err) {
         console.log(err);
@@ -113,12 +118,12 @@ export default function ProfileRight({ user, changeUser }) {
   const handleClick = async () => {
     try {
       if (followed) {
-        await axios.put(`/users/${user._id}/unfollow`, {
+        await axios.put(`${URL_API}/api/users/${user._id}/unfollow`, {
           userId: currentUser._id,
         });
         dispatch({ type: "UNFOLLOW", payload: user._id });
       } else {
-        await axios.put(`/users/${user._id}/follow`, {
+        await axios.put(`${URL_API}/api/users/${user._id}/follow`, {
           userId: currentUser._id,
         });
         dispatch({ type: "FOLLOW", payload: user._id });
@@ -128,7 +133,7 @@ export default function ProfileRight({ user, changeUser }) {
   };
   //get Faculty
 
-  const [editFac, setEditFac] = useState("");
+  const [editFac, setEditFac] = useState(user.faculty);
   const handleChange = (event) => {
     setEditFac(event.target.value);
   };
@@ -246,11 +251,7 @@ export default function ProfileRight({ user, changeUser }) {
               <div className="rightbarFollowing">
                 <img
                   alt=""
-                  src={
-                    friend.profilePicture
-                      ? friend.profilePicture
-                      : PF + "person/noAvartar.jpg"
-                  }
+                  src={friend.profilePicture}
                   className="rightbarFollowingImg"
                 />
                 <span className="rightbarFollowingName">{friend.name}</span>

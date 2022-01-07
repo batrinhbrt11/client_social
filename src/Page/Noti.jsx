@@ -56,9 +56,10 @@ function Noti() {
   const [noti, setNoti] = useState({});
   const [cate, setCate] = useState("");
   const idNoti = useParams().id;
+  const URL = process.env.API_URL;
   const fecthNoti = async () => {
     try {
-      const res = await axios.get(`/notifications/${idNoti}`);
+      const res = await axios.get(`${URL}/api/notifications/${idNoti}`);
     } catch (err) {
       console.log(err);
     }

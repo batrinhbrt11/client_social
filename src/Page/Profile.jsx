@@ -53,10 +53,11 @@ export default function Profile() {
   const [user, setUser] = useState({});
   const username = useParams().username;
   const [error, setError] = useState(false);
+  const URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`/users/profile/${username}`, {
+        const res = await axios.get(`${URL}/api/users/profile/${username}`, {
           headers: { "x-access-token": token },
         });
         setUser(res.data);

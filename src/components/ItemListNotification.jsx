@@ -5,8 +5,9 @@ import "./ListNotis/ListNotis.css";
 import axios from "axios";
 export default function ItemListNotification({ noti, category }) {
   const [cate, setCate] = useState({});
+  const URL = process.env.REACT_APP_API_URL;
   const getCateName = async (id) => {
-    const cate = await axios.get(`/admin/categories/${id}`);
+    const cate = await axios.get(`${URL}/api/admin/categories/${id}`);
     setCate(cate.data);
   };
   useEffect(() => {
@@ -18,12 +19,14 @@ export default function ItemListNotification({ noti, category }) {
       <div className="content">{parse(noti.content)}</div>
       <div className="notification-footer">
         <Link to={`/notification/noti/${noti._id}`}>Chi tiết thông báo</Link>
-        <div>
+        <div className="footer_info">
           {category && (
-            <Link to={`/notification/${cate.slug}`}>{cate.name} || </Link>
+            <Link className="category_link" to={`/notification/${cate.slug}`}>
+              {cate.name} ||{" "}
+            </Link>
           )}
 
-          <span>Ngày đăng: {noti.createdAt.slice(0, 10)}</span>
+          <span>{noti.createdAt.slice(0, 10)}</span>
         </div>
       </div>
     </div>

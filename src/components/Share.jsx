@@ -114,12 +114,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Share({ addPost }) {
   const classes = useStyles();
   const { token, user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   const desc = useRef();
   const videoLink = useRef();
   const [file, setFile] = useState(null);
-
+  const URL_API = process.env.REACT_APP_API_URL;
   const [progress, setProgress] = useState(false);
+
   const uploadFiles = (file) => {
     return new Promise((resolve, reject) => {
       if (!file) resolve("");
@@ -172,7 +173,7 @@ export default function Share({ addPost }) {
             ),
             likes: [],
           };
-          await axios.post("/posts", newPost, {
+          await axios.post(`${URL_API}/api/posts`, newPost, {
             headers: { "x-access-token": token },
           });
           addPost(newPost);
@@ -242,11 +243,7 @@ export default function Share({ addPost }) {
             </div>
           </div>
 
-          <Button
-            type="submit"
-            disable={progress}
-            className={classes.shareButton}
-          >
+          <Button type="submit" className={classes.shareButton}>
             {progress ? <CircularProgress color="inherit" /> : "Đăng bài"}
           </Button>
         </form>

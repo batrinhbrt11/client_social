@@ -22,12 +22,15 @@ export default function ListNotis() {
   const [cateName, setCateName] = useState("");
   const [pages, setPages] = useState("");
   const [searchText, setSearchText] = useState("");
-
+  const URL = process.env.REACT_APP_API_URL;
   const fetchNotifications = async (page) => {
     try {
-      const res = await axios.get(`/notifications/cate/${slug}?page=${page}`, {
-        headers: { Authorization: "Bearer " + token },
-      });
+      const res = await axios.get(
+        `${URL}/api/notifications/cate/${slug}?page=${page}`,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
       setNotifications(res.data.notifications);
       setCateName(res.data.cate.name);
       setPages(Math.ceil(res.data.len / 10));

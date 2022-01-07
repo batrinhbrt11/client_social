@@ -11,10 +11,11 @@ export default function CateNoti() {
   const [notis, setNotis] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const [categories, setCategories] = useState([]);
+  const URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("/admin/categories");
+        const res = await axios.get(`${URL}/api/admin/categories`);
         const data = res.data;
         setNotis(data);
         let arr = [];

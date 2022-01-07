@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {

@@ -23,6 +23,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function NotificationTable() {
   moment.locale("vi");
+  const URL = process.env.REACT_APP_API_URL;
   const [alert, setAlert] = useState(false);
   const [alertContent, setAlertContent] = useState("");
   const [alertType, setAlertType] = useState("");
@@ -59,7 +60,7 @@ export default function NotificationTable() {
   const handleDeleteNotification = async () => {
     try {
       const res = await axios.delete(
-        `falcuty/notifications/${notificationId}`,
+        `${URL}/api/falcuty/notifications/${notificationId}`,
         {
           headers: { Authorization: "Bearer " + token },
         }
@@ -82,7 +83,7 @@ export default function NotificationTable() {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get(`falcuty/notifications`, {
+      const res = await axios.get(`${URL}/api/falcuty/notifications`, {
         headers: { Authorization: "Bearer " + token },
       });
 
@@ -97,7 +98,7 @@ export default function NotificationTable() {
 
   const fectchCategories = async () => {
     try {
-      let res = await axios.get(`/falcuty/categories`, {
+      let res = await axios.get(`${URL}/api/falcuty/categories`, {
         headers: { Authorization: "Bearer " + token },
       });
       let unSelectedCategory = res.data.filter(

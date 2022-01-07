@@ -46,7 +46,7 @@ export default function Drawer() {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const { user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   return (
     <div>
       <IconButton

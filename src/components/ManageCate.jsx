@@ -13,7 +13,6 @@ import {
   DialogContent,
   DialogActions,
   Dialog,
- 
 } from "@mui/material/";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
@@ -75,7 +74,7 @@ export default function ManageCate() {
     setOpen(true);
     setChoice(string);
   };
-
+  const URL = process.env.REACT_APP_API_URL;
   const handleClose = () => {
     setOpen(false);
   };
@@ -99,11 +98,11 @@ export default function ManageCate() {
       name: editName.current.value,
     };
     //call api here
-    await axios.put(`/admin/categories/${editRow.id}`, newCate, {
+    await axios.put(`${URL}/api/admin/categories/${editRow.id}`, newCate, {
       headers: { Authorization: "Bearer " + token },
     });
     //
-    const res = await axios.get("/admin/categories");
+    const res = await axios.get(`${URL}/api/admin/categories`);
     setRows(res.data);
     setSuccess("Sửa danh mục thành công");
     handleClose();
@@ -117,7 +116,7 @@ export default function ManageCate() {
 
     var config = {
       method: "delete",
-      url: "/admin/categories/delete",
+      url: `${URL}/api/admin/categories/delete`,
       headers: { Authorization: "Bearer " + token },
       data: {
         ids: Array.from(selectedIDs),
@@ -145,11 +144,11 @@ export default function ManageCate() {
         const newCate = {
           name: addName.current.value,
         };
-        await axios.post("/admin/categories/add", newCate, {
+        await axios.post(`${URL}/api/admin/categories/add`, newCate, {
           headers: { Authorization: "Bearer " + token },
         });
         //
-        const res = await axios.get("/admin/categories");
+        const res = await axios.get(`${URL}/api/admin/categories`);
         setRows(res.data);
         handleClose();
         setSuccess("Thêm danh mục thành công");
@@ -164,7 +163,7 @@ export default function ManageCate() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("/admin/categories");
+        const res = await axios.get(`${URL}/api/admin/categories`);
         const data = res.data;
         setRows(data);
       } catch (err) {

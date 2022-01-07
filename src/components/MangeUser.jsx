@@ -80,7 +80,7 @@ export default function MangeUser() {
   const addAuth = useRef();
   const addFac = useRef();
   const [value, setValue] = useState([]);
-
+  const URL = process.env.REACT_APP_API_URL;
   //edit dialog
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState("");
@@ -134,11 +134,11 @@ export default function MangeUser() {
       categories: arr,
     };
     //call api here
-    await axios.put(`/users/${editRow.id}`, newUser, {
+    await axios.put(`${URL}/api/users/${editRow.id}`, newUser, {
       headers: { "x-access-token": token },
     });
     //
-    const res = await axios.get("/users", {
+    const res = await axios.get(`${URL}/api/users`, {
       headers: { "x-access-token": token },
     });
     setRows(res.data.filter((d) => d.authorize === 2));
@@ -154,7 +154,7 @@ export default function MangeUser() {
 
     var config = {
       method: "delete",
-      url: "/users",
+      url: `${URL}/api/users`,
       headers: {
         "x-access-token": token,
       },
@@ -200,11 +200,11 @@ export default function MangeUser() {
           password: addPassword.current.value,
           authorize: "2",
         };
-        await axios.post("/users", newUser, {
+        await axios.post(`${URL}/api/users`, newUser, {
           headers: { "x-access-token": token },
         });
         //
-        const res = await axios.get("/users", {
+        const res = await axios.get(`${URL}/api/users`, {
           headers: { "x-access-token": token },
         });
         setRows(res.data.filter((d) => d.authorize === 2));
@@ -219,7 +219,7 @@ export default function MangeUser() {
   //get user
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/admin/faculties");
+      const res = await axios.get(`${URL}/api/admin/faculties`);
       const data = res.data;
       setRows(data);
     } catch (err) {
@@ -230,7 +230,7 @@ export default function MangeUser() {
   const [categories, setCategories] = useState([]);
   const fetchCate = async () => {
     try {
-      const res = await axios.get("/admin/categories");
+      const res = await axios.get(`${URL}/api/admin/categories`);
       const data = res.data;
       setCategories(data);
     } catch (err) {

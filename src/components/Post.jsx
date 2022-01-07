@@ -258,6 +258,7 @@ export default function Post({ post, delete_post }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const URL_API = process.env.REACT_APP_API_URL;
   const [showCmt, setShowCmt] = useState(false);
   //modal delete
   const [openDelete, setOpenDelete] = useState(false);
@@ -291,7 +292,7 @@ export default function Post({ post, delete_post }) {
   const likeHandle = () => {
     try {
       axios.put(
-        "/posts/" + status._id + "/like",
+        `${URL_API}/api/posts/${status._id}/like`,
         { userId: user._id },
         {
           headers: { "x-access-token": token },
@@ -306,8 +307,6 @@ export default function Post({ post, delete_post }) {
 
   const [userPost, setUserPost] = useState({});
 
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-
   useEffect(() => {
     setIsLiked(status.likes.includes(user._id));
   }, [user._id, status.likes]);
@@ -316,7 +315,7 @@ export default function Post({ post, delete_post }) {
   const [comments, setComments] = useState([]);
   const fetchComments = async () => {
     try {
-      const res = await axios.get(`/comments/${post._id}`, {
+      const res = await axios.get(`${URL_API}/api/comments/${post._id}`, {
         headers: { "x-access-token": token },
       });
       const data = res.data;
@@ -334,7 +333,7 @@ export default function Post({ post, delete_post }) {
     const ourRequest = axios.CancelToken.source(); //1st step
     const fetchUser = async () => {
       const res = await axios.get(
-        `/users/${status.userId}`,
+        `${URL_API}/api/users/${status.userId}`,
         {
           headers: { "x-access-token": token },
         },
@@ -394,10 +393,10 @@ export default function Post({ post, delete_post }) {
         img: link,
         video: videoLink.current.value,
       };
-      await axios.put(`/posts/${status._id}`, newPost, {
+      await axios.put(`${URL_API}/api/posts/${status._id}`, newPost, {
         headers: { "x-access-token": token },
       });
-      const res = await axios.get(`/posts/${status._id}`, {
+      const res = await axios.get(`${URL_API}/api/posts/${status._id}`, {
         headers: { "x-access-token": token },
       });
 

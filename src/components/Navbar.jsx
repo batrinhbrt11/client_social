@@ -158,18 +158,18 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const classes = useStyles({ open });
   const { token, user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [listUser, setListUser] = useState([]);
   //Socket thông báo
   const [socket, setSocket] = useState(null);
   const [message, setMessage] = React.useState("");
   const [openNotifiAlert, setOpenNotifiAlert] = React.useState(false);
-
+  const URL = process.env.REACT_APP_API_URL;
   const [searchText, setSearchText] = useState("");
   const setupSocket = () => {
     if (!socket && token && user) {
-      const newSocket = io("http://localhost:5000", {
+      const newSocket = io(`${URL}`, {
         query: { token },
         transports: ["websocket"],
       });
@@ -184,7 +184,7 @@ export default function Navbar() {
   };
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/users", {
+      const res = await axios.get(`${URL}/api/users`, {
         headers: { "x-access-token": token },
       });
       const data = res.data;
@@ -203,7 +203,7 @@ export default function Navbar() {
     if (socket) {
       socket.on("newNotification", (msg) => {
         setMessage(msg);
-        console.log(msg);
+
         setOpenNotifiAlert(true);
       });
     }
@@ -327,11 +327,7 @@ export default function Navbar() {
                         <li>
                           <Avatar
                             alt=""
-                            src={
-                              user.profilePicture
-                                ? user.profilePicture
-                                : PF + "person/noAvartar.jpg"
-                            }
+                            src={user.profilePicture}
                             className={classes.image}
                           />
                           <span>{user.name}</span>

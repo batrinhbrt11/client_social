@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Leftbar() {
   const classes = useStyles();
   const { user } = useContext(AuthContext);
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   return (
     <Container className={classes.container}>
       <Link to={`/profile/${user.username}`}>

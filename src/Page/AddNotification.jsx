@@ -20,7 +20,7 @@ import Slide from "@mui/material/Slide";
 import { Grid, makeStyles } from "@material-ui/core";
 import Leftbar from "../components/Leftbar";
 import Navbar from "../components/Navbar";
-import io from "socket.io-client"
+import io from "socket.io-client";
 
 import ErrorPage from "../components/ErrorPage";
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function AddNotification() {
   const classes = useStyles();
-  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   const [errAlert, setErrAlert] = React.useState(false);
   const { token, user } = useContext(AuthContext);
   const [errorMsg, setErrorMsg] = useState("");
@@ -50,25 +50,26 @@ export default function AddNotification() {
   const [categoryId, setCategoryId] = useState("");
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
- 
+  const URL = process.env.REACT_APP_API_URL;
   const [socket, setSocket] = useState(null);
   const setupSocket = () => {
-    if(!socket && token && user){
-      const newSocket = io("http://localhost:5000", {
-        query: { token }, transports : ['websocket']
-      })
+    if (!socket && token && user) {
+      const newSocket = io(`${URL}`, {
+        query: { token },
+        transports: ["websocket"],
+      });
       newSocket.on("connect", () => {
         console.log("Connected");
-      })
+      });
       newSocket.on("disconect", () => {
         setSocket(null);
-      })
+      });
       setSocket(newSocket);
     }
-  }
+  };
   useEffect(() => {
-    setupSocket()
-  },[])
+    setupSocket();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,17 +92,21 @@ export default function AddNotification() {
         categoryId: categoryId,
       };
 
-      let res = await axios.post(`/falcuty/notifications`, notification, {
-        headers: { Authorization: "Bearer " + token },
-      });
+      let res = await axios.post(
+        `${URL}/api/falcuty/notifications`,
+        notification,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
       if (res.data.code == 1) {
         setSuccess(true);
         setTimeout(() => {
           navigate("/falcuty");
         }, 2000);
         socket.emit("postNoification", {
-          message: res.data.message
-        }) 
+          message: res.data.message,
+        });
       } else {
         setErrAlert(true);
         setErrorMsg(res.data.message);
@@ -110,7 +115,7 @@ export default function AddNotification() {
   };
   const fectchCategories = async () => {
     try {
-      let res = await axios.get(`/falcuty/categories`, {
+      let res = await axios.get(`${URL}/api/falcuty/categories`, {
         headers: { Authorization: "Bearer " + token },
       });
       setCategories(res.data);
