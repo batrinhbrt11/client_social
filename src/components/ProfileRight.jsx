@@ -88,11 +88,13 @@ export default function ProfileRight({ user, changeUser }) {
   const [userFac, setUserFac] = useState("");
   const getFacName = async () => {
     try {
-      const res = await axios.get(
-        `${URL_API}/api/admin/faculties/${user.faculty}`
-      );
-      const data = res.data;
-      setUserFac(data);
+      if (user.faculty) {
+        const res = await axios.get(
+          `${URL_API}/api/admin/faculties/${user.faculty}`
+        );
+        const data = res.data;
+        setUserFac(data);
+      }
     } catch (err) {
       console.log("Requet cancel", err.message);
     }
