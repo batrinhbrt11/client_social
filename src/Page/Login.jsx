@@ -23,8 +23,7 @@ export default function Login() {
   };
   const responseGoogle = async (response) => {
     if (
-      response.profileObj.email.includes("@student.tdtu.edu.vn") ||
-      response.profileObj.email.includes("@tdtu.edu.vn")
+      response.profileObj.email.includes("@gmail.com")
     ) {
       setGoogle(response.profileObj);
       setInputPassword(true);
@@ -38,7 +37,7 @@ export default function Login() {
 
   const handleClickRegister = async (e) => {
     e.preventDefault();
-    const username_gg = google.email.slice(0, 8);
+    const username_gg = google.email.replace("@gmail.com","");
 
     try {
       const newUser = {
@@ -54,7 +53,7 @@ export default function Login() {
 
       loginCall(
         {
-          username: google.email.slice(0, 8),
+          username: google.email.replace("@gmail.com",""),
           password: password.current.value,
         },
         dispatch

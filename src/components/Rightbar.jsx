@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Avatar, Container, makeStyles, Typography } from "@material-ui/core";
+import {  Container, makeStyles, Typography } from "@material-ui/core";
 import "../css/Rightbar.css";
 import axios from "axios";
 import { AuthContext } from "../Context/AuthContext";
-import parse from "html-react-parser";
 import ItemNoti from "./ItemNoti";
 import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({

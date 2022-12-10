@@ -132,6 +132,7 @@ export default function Share({ addPost }) {
           const prog = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
+          console.log(prog);
         },
         (err) => {
           console.log(err);

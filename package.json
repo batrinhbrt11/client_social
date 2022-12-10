@@ -32,7 +32,7 @@
     "react-icons": "^4.3.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.0.2",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "react-window": "^1.8.6",
     "socket.io-client": "^4.4.0",
     "timeago.js": "^4.0.2",
@@ -62,5 +62,4 @@
       "last 1 safari version"
     ]
   }
-  
 }
